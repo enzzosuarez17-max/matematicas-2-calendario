@@ -1,0 +1,10 @@
+{
+  "name": "matematicas-2-pizarra-github",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-08",
+  "vars": {
+    "GITHUB_OWNER": "enzzosuarez17-max",
+    "GITHUB_REPO": "matematicas-2-calendario",
+    "GITHUB_BRANCH": "main"
+  }
+}
