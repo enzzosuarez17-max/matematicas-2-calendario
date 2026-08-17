@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{
+  --bg:#0c1018;--panel:#141a26;--panel2:#1b2334;--line:#28324a;--text:#eef2f8;--muted:#93a1b8;
+  --blue:#3b82f6;--purple:#a855f7;--amber:#f59e0b;--green:#10b981;--red:#ef4444;
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,-apple-system,'Segoe UI',sans-serif;padding:14px}
+.head{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.head h1{font-size:17px;letter-spacing:-.3px;flex:1}
+.nav{display:flex;gap:6px}
+.nav button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:9px;padding:6px 12px;font-weight:800;cursor:pointer;font-size:14px}
+.nav button:disabled{opacity:.35;cursor:default}
+.mname{font-size:18px;font-weight:850;min-width:170px}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.wd{text-align:center;font-size:10px;font-weight:800;color:var(--muted);letter-spacing:1.2px;padding:4px 0;text-transform:uppercase}
+.day{background:var(--panel);border:1px solid var(--line);border-radius:10px;min-height:74px;padding:6px;cursor:pointer;transition:.12s}
+.day:hover{border-color:var(--blue)}
+.day.other{opacity:.28;cursor:default}
+.day.out{visibility:hidden}
+.day.today{border-color:var(--blue);box-shadow:0 0 0 2px rgba(59,130,246,.35)}
+.day .n{font-size:11px;font-weight:800;color:var(--muted)}
+.ev{margin-top:3px;font-size:9.8px;line-height:1.2;border-left:3px solid var(--blue);background:var(--panel2);padding:3px 5px;border-radius:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ev.te{border-color:var(--blue)}.ev.pr{border-color:var(--purple)}.ev.tp{border-color:var(--amber)}
+.ev.re{border-color:var(--green)}
+.ev.ex{border-color:var(--red);background:rgba(239,68,68,.18);font-weight:800;color:#fca5a5}
+.ev.fe{border-color:#b45309;background:rgba(245,158,36,.13)}
+.more{font-size:9px;color:var(--muted);margin-top:2px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:12px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px}
+.side{display:grid;grid-template-columns:1.7fr 1fr;gap:12px;margin-top:14px}
+@media(max-width:720px){.side{grid-template-columns:1fr}}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px}
+.box h2{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--blue);margin-bottom:9px}
+.item{display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border:none}
+.dt{background:var(--panel2);border:1px solid var(--line);border-radius:8px;text-align:center;padding:4px 8px;min-width:52px}
+.dt b{display:block;font-size:15px}
+.dt span{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.item .t{flex:1;font-size:12.5px;font-weight:650}
+.item .t small{display:block;font-weight:500;color:var(--muted);font-size:11px}
+.badge{font-size:9px;font-weight:800;letter-spacing:1px;padding:3px 8px;border-radius:99px}
+.badge.ex{background:rgba(239,68,68,.2);color:#fca5a5}
+.badge.days{background:rgba(59,130,246,.18);color:#93c5fd}
+.detail .row{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+.detail .row:last-child{border:none}
+</style>
+</head>
+<body>
+<div class="head">
+  <div class="mname" id="mname"></div>
+  <div class="nav">
+    <button id="prev">←</button><button id="todayBtn">Hoy</button><button id="next">→</button>
+  </div>
+</div>
+<div class="grid" id="grid"></div>
+<div class="legend">
+  <span><i style="background:var(--blue)"></i>Teórica</span><span><i style="background:var(--purple)"></i>Práctica</span>
+  <span><i style="background:var(--amber)"></i>Teór.-Práct.</span><span><i style="background:var(--green)"></i>Repaso</span>
+  <span><i style="background:var(--red)"></i>Parcial</span><span><i style="background:#b45309"></i>Feriado</span>
+</div>
+<div class="side">
+  <div class="box" id="detailBox"><h2 id="detailT">Detalles del día</h2><div class="detail" id="detail"><div class="row muted" style="color:var(--muted)">Tocá un día con clases para ver el detalle.</div></div></div>
+  <div class="box"><h2>Próximos</h2><div id="next"></div></div>
+</div>
+<script>
+const EV=[
+ ['2026-08-03','U1 (Aula Virtual)','te','Unidad I — Contabilidad e Información Contable'],
+ ['2026-08-03','U2 Teórica','te','Unidad II — Elementos y Variaciones Patrimoniales'],
+ ['2026-08-05','U3 Teórica','te','Unidad III — Sistema Contable'],
+ ['2026-08-07','Práctica U1–U3','pr','Cuentas y variaciones patrimoniales'],
+ ['2026-08-10','U4 · Caja','te','Unidad IV — Disponibilidades: Caja'],
+ ['2026-08-12','U4 · Bancos','te','Unidad IV — Disponibilidades: Bancos'],
+ ['2026-08-14','Práctica U4','pr','Disponibilidades'],
+ ['2026-08-17','Feriado','fe','Paso a la inmortalidad del Gral. San Martín'],
+ ['2026-08-19','U5 Teórica','te','Unidad V — Inversiones'],
+ ['2026-08-21','Práctica U5','pr','Inversiones'],
+ ['2026-08-24','U6 Teórica','te','Unidad VI — Cuentas por Cobrar'],
+ ['2026-08-26','U6 Teórica','te','Unidad VI — Cuentas por Cobrar'],
+ ['2026-08-28','Práctica U6','pr','Cuentas por Cobrar'],
+ ['2026-08-31','Práctica U6','pr','Cuentas por Cobrar'],
+ ['2026-09-02','Repaso 1er P.','re','Repaso teórico-práctico'],
+ ['2026-09-04','PRIMER PARCIAL','ex','Unidades I a VI'],
+ ['2026-09-07','U7 Teórica','te','Bienes de Cambio'],
+ ['2026-09-09','U7 Teórica','te','Bienes de Cambio'],
+ ['2026-09-11','Práctica U7','pr','Bienes de Cambio'],
+ ['2026-09-14','U8 Teórica','te','Bienes de Uso'],
+ ['2026-09-16','U8 Teór.-Práct.','tp','Bienes de Uso'],
+ ['2026-09-18','Práctica U8','pr','Bienes de Uso'],
+ ['2026-09-21','Asueto','fe','Día del Estudiante'],
+ ['2026-09-23','U9 Teór.-Práct.','tp','Activos Intangibles y Pasivo'],
+ ['2026-09-25','Práctica','pr','Bienes de Uso y Pasivo'],
+ ['2026-09-28','U10 Teór.-Práct.','tp','Pasivo y Patrimonio Neto'],
+ ['2026-09-30','Feriado','fe','Fundación de Córdoba'],
+ ['2026-10-02','Práctica','pr','Pasivo'],
+ ['2026-10-05','Práctica','pr','Patrimonio Neto'],
+ ['2026-10-07','Repaso 2do P.','re','Repaso teórico-práctico'],
+ ['2026-10-09','SEGUNDO PARCIAL','ex','Unidades VII a XI'],
+ ['2026-10-12','Feriado','fe','Día de la Diversidad Cultural'],
+ ['2026-10-14','U12 Teórica','te','Balance General'],
+ ['2026-10-16','Práctica','pr','Balance General'],
+ ['2026-10-19','U12 Teórica','te','Informes Contables'],
+ ['2026-10-21','U12 Teór.-Práct.','tp','Informes Contables'],
+ ['2026-10-23','Práctica','pr','Balance General'],
+ ['2026-10-26','Práctica','pr','Balance General'],
+ ['2026-10-28','Práctica','pr','Informes Contables'],
+ ['2026-10-30','Repaso 3er P.','re','Repaso teórico-práctico'],
+ ['2026-11-02','TERCER PARCIAL','ex','U. XII (promoción) + recuperatorios 1 y 2'],
+ ['2026-11-06','Cierre','fe','Cierre de regularidad'],
+];
+const PARC=['2026-09-04','2026-10-09','2026-11-02'];
+const MES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DIA=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const byDay=d=>EV.filter(e=>e[0]===d);
+const iso=t=>t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+let cur=new Date();cur.setDate(1);
+const MIN=new Date(2026,7,1),MAX=new Date(2026,10,1);
+let sel=null;
+function evHTML(e){return '<div class="ev '+e[2]+'">'+e[1]+'</div>'}
+function render(){
+  document.getElementById('mname').textContent=MES[cur.getMonth()]+' '+cur.getFullYear();
+  document.getElementById('prev').disabled=cur<=MIN;
+  document.getElementById('next').disabled=cur>=MAX;
+  const g=document.getElementById('grid');
+  g.innerHTML=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].map(w=>'<div class="wd">'+w+'</div>').join('');
+  const y=cur.getFullYear(),m=cur.getMonth(),start=(new Date(y,m,1).getDay()+6)%7,last=new Date(y,m+1,0).getDate();
+  for(let i=0;i<start;i++)g.insertAdjacentHTML('beforeend','<div class="day out"></div>');
+  const hoy=iso(new Date());
+  for(let d=1;d<=last;d++){
+    const ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const evs=byDay(ds);
+    let h='<div class="n">'+d+(evs.length?' · '+evs.length:'')+'</div>';
+    evs.slice(0,3).forEach(e=>h+=evHTML(e));
+    if(evs.length>3)h+='<div class="more">+'+(evs.length-3)+' más</div>';
+    g.insertAdjacentHTML('beforeend','<div class="day'+(ds===hoy?' today':'')+'" data-d="'+ds+'" data-n="'+d+'">'+h+'</div>');
+  }
+}
+function showDay(ds){
+  const evs=byDay(ds);
+  const dt=new Date(ds+'T12:00:00');
+  document.getElementById('detailT').textContent=DIA[dt.getDay()]+' '+dt.getDate()+' de '+MES[dt.getMonth()];
+  document.getElementById('detail').innerHTML=evs.length?evs.map(e=>
+    '<div class="row"><span class="ev '+e[2]+'" style="margin:0">'+e[1]+'</span><span style="flex:1">'+e[3]+'</span></div>').join('')
+    :'<div class="row" style="color:var(--muted)">Sin actividades registradas.</div>';
+}
+document.getElementById('grid').addEventListener('click',e=>{
+  const d=e.target.closest('.day');
+  if(!d||!d.dataset.d)return;showDay(d.dataset.d);
+});
+document.getElementById('prev').onclick=()=>{cur.setMonth(cur.getMonth()-1);render()};
+document.getElementById('next').onclick=()=>{cur.setMonth(cur.getMonth()+1);render()};
+document.getElementById('todayBtn').onclick=()=>{cur=new Date();cur.setDate(1);render();showDay(iso(new Date()))};
+function nextList(){
+  const hoy=iso(new Date());
+  const up=EV.filter(e=>e[0]>=hoy).slice(0,7);
+  document.getElementById('next').innerHTML=up.map(e=>{
+    const dt=new Date(e[0]+'T12:00:00');
+    const days=Math.round((dt-new Date(hoy+'T12:00:00'))/864e5);
+    const isPar=PARC.includes(e[0]);
+    return '<div class="item"><div class="dt"><b>'+dt.getDate()+'</b><span>'+DIA[dt.getDay()]+'</span></div>'+
+    '<div class="t">'+e[1]+'<small>'+e[3]+'</small></div>'+
+    (isPar?'<span class="badge ex">EXAMEN</span>':'<span class="badge days">en '+days+'d</span>')+'</div>';
+  }).join('')||'<div class="item muted">Cuatrimestre finalizado 🎓</div>';
+}
+render();nextList();
+const hoy=iso(new Date());
+if(hoy>='2026-08-01'&&hoy<='2026-11-30')showDay(hoy);
+</script>
+</body>
+</html>
