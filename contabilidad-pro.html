@@ -1,0 +1,1148 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0e14">
+<title>Contabilidad Pro — Motor de estudio · FCE UNC 2026</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📗</text></svg>">
+<style>
+:root{
+  --bg:#0b0e14;--bg2:#0f131c;--panel:#141927;--panel2:#1b2234;--line:#28324a;--text:#eef2f8;--muted:#94a1b8;
+  --accent:#5b8cff;--accent2:#8b5cf6;--ok:#2fbf71;--warn:#f5a524;--bad:#ef4444;--gold:#fbbf24;
+  --shadow:0 10px 40px rgba(0,0,0,.45);--r:16px;
+}
+[data-theme=light]{--bg:#f2f5fa;--bg2:#e9edf5;--panel:#ffffff;--panel2:#eef2f9;--line:#d9e0ee;--text:#151a26;--muted:#5c6980;--shadow:0 10px 30px rgba(30,50,90,.12)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(1200px 500px at 80% -10%,rgba(91,140,255,.12),transparent),radial-gradient(900px 400px at -10% 110%,rgba(139,92,246,.10),transparent),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;transition:background .3s,color .3s}
+.wrap{max-width:1240px;margin:auto;padding:18px}
+/* header */
+header.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:16px 0 14px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 6px 18px rgba(91,140,255,.35)}
+header.top h1{font-size:21px;margin:0;letter-spacing:-.4px}
+header.top .sub{color:var(--muted);font-size:12px;letter-spacing:1.8px;text-transform:uppercase}
+header.top .spacer{flex:1}
+.streak{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:7px 12px;font-weight:800;font-size:13px}
+.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:11px;padding:9px 14px;font-weight:700;cursor:pointer;font-size:13px;transition:.15s}
+.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(120deg,var(--accent),var(--accent2));border:none;color:#fff}
+.btn.danger{color:#fda4af;border-color:rgba(239,68,68,.4)}
+.btn.ghost{background:transparent}
+.btn.sm{padding:5px 10px;font-size:12px}
+.kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 7px;font:700 11px ui-monospace,monospace;color:var(--muted)}
+/* tabs */
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:20}
+.tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:9px 13px;border-radius:11px;font-weight:700;font-size:13px;cursor:pointer;transition:.15s}
+.tab:hover{color:var(--text)}
+.tab.active{color:#fff;background:linear-gradient(120deg,var(--accent),var(--accent2));border-color:transparent;box-shadow:0 4px 14px rgba(91,140,255,.35)}
+/* cards & grids */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:900px){.grid2,.grid3,.grid4{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+h2.sec{font-size:12.5px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin:0 0 12px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.stat .big{font-size:30px;font-weight:850}
+.stat .lbl{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1.5px}
+.stat.red .big{color:#f87171}.stat.green .big{color:#4ade80}.stat.blue .big{color:#93b4ff}.stat.gold .big{color:var(--gold)}.stat.violet .big{color:#c4b5fd}
+input,select,textarea{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:9px 10px;font:inherit;font-size:13.5px;outline:none}
+input:focus,select:focus{border-color:var(--accent)}
+input[type=date],input[type=number]{color-scheme:dark}
+.muted{color:var(--muted);font-size:13px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.hidden{display:none!important}
+/* calendario */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal .wd{text-align:center;font-weight:800;font-size:10.5px;color:var(--muted);letter-spacing:1px;padding:6px 0;text-transform:uppercase}
+.day{background:var(--panel);border:1px solid var(--line);border-radius:12px;min-height:88px;padding:7px}
+.day.other{opacity:.3}
+.day.today{border-color:var(--accent);box-shadow:0 0 0 2px rgba(91,140,255,.3)}
+.day .n{font-weight:800;font-size:12px;color:var(--muted)}
+.ev{margin-top:4px;font-size:10.5px;line-height:1.25;border-left:3px solid var(--accent);background:var(--panel2);padding:4px 5px;border-radius:6px;cursor:pointer}
+.ev.teorica{border-color:#3b82f6}.ev.practica{border-color:#a855f7}.ev.tp{border-color:#f59e0b}
+.ev.repaso{border-color:#10b981}.ev.eval{border-color:var(--bad);background:rgba(239,68,68,.16);font-weight:800;color:#fca5a5}
+.ev.feriado{border-color:#b45309;background:rgba(245,165,36,.13)}
+[data-theme=light] .ev.eval{color:#b91c1c}
+.calnav{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.calnav .mname{font-size:18px;font-weight:850;flex:1}
+.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:11.5px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}
+.agenda-item{display:flex;gap:12px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line)}
+.agenda-item:last-child{border:none}
+.agenda-date{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:6px 10px;text-align:center;min-width:58px}
+.agenda-date b{display:block;font-size:16px}
+.agenda-date span{font-size:10px;color:var(--muted);text-transform:uppercase}
+/* motor contable */
+.subtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.subtab{border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:9px;padding:6px 12px;font-weight:700;font-size:12.5px;cursor:pointer}
+.subtab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+table.conta{width:100%;border-collapse:collapse;font-size:13px}
+table.conta th{color:var(--muted);text-transform:uppercase;font-size:10.5px;letter-spacing:1px;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+table.conta td{padding:8px 10px;border-bottom:1px solid var(--line)}
+table.conta tr:hover td{background:var(--panel2)}
+table.conta .num{text-align:right;font-family:ui-monospace,Consolas,monospace;white-space:nowrap}
+table.conta tr.total td{font-weight:850;border-top:2px solid var(--accent);color:var(--accent)}
+.asiento{border:1px solid var(--line);border-radius:12px;margin:10px 0;overflow:hidden}
+.asiento .head{display:flex;gap:10px;align-items:center;background:var(--panel2);padding:9px 12px;font-size:12.5px}
+.asiento .head b{color:var(--accent)}
+.tagline{display:flex;gap:8px}
+.asiento table{margin:0}
+.asiento td,.asiento th{border-bottom:1px solid var(--line)}
+.pill{font-size:10px;font-weight:800;letter-spacing:1px;padding:3px 9px;border-radius:99px;text-transform:uppercase}
+.pill.A{background:rgba(59,130,246,.15);color:#93c5fd}.pill.P{background:rgba(245,165,36,.15);color:#fcd34d}
+.pill.N{background:rgba(139,92,246,.15);color:#c4b5fd}.pill.Rp{background:rgba(47,191,113,.15);color:#86efac}.pill.Rn{background:rgba(239,68,68,.15);color:#fca5a5}
+.jline{display:grid;grid-template-columns:1.6fr 1fr 1fr 34px;gap:6px;margin:5px 0}
+@media(max-width:640px){.jline{grid-template-columns:1fr 80px 80px 34px}}
+.balance-ok{color:#4ade80;font-weight:800}.balance-bad{color:#f87171;font-weight:800}
+/* flashcards */
+.fc-stage{perspective:1300px;margin:14px 0}
+.fc{position:relative;min-height:260px;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,.1,.2,1);cursor:pointer}
+.fc.flip{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center}
+.fc-front{background:linear-gradient(135deg,#141d36,#20304f);border:1px solid var(--line);font-size:20px;font-weight:750;line-height:1.45}
+.fc-back{background:linear-gradient(135deg,#1c1533,#2e2050);transform:rotateY(180deg);border:1px solid var(--line);font-size:15.5px;font-weight:500;line-height:1.6}
+[data-theme=light] .fc-front{background:linear-gradient(135deg,#e6edfc,#d8e3f9)}
+[data-theme=light] .fc-back{background:linear-gradient(135deg,#f1e8fd,#e6daf9)}
+.fc-why{margin-top:14px;font-size:12px;color:var(--muted)}
+.sr-bar{height:8px;border-radius:6px;background:var(--panel2);overflow:hidden;margin:10px 0}
+.sr-bar>div{height:100%;background:linear-gradient(90deg,var(--ok),var(--accent));transition:width .4s}
+.chip{display:inline-block;padding:4px 11px;border-radius:99px;font-size:11.5px;font-weight:700;background:var(--panel2);border:1px solid var(--line);cursor:pointer;margin:2px}
+.chip.on{background:linear-gradient(120deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+/* simulacro */
+.q-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:12px;padding:13px 15px;margin:7px 0;font-size:14.5px;cursor:pointer;font-weight:600;transition:.15s}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{border-color:var(--ok);background:rgba(47,191,113,.14)}
+.opt.wrong{border-color:var(--bad);background:rgba(239,68,68,.14)}
+.opt b{color:var(--accent);margin-right:8px}
+.timer{font:850 26px ui-monospace,monospace;color:var(--accent)}
+.score-ring{font-size:64px;font-weight:850}
+/* pomodoro */
+.pomo{display:flex;flex-direction:column;align-items:center;gap:8px}
+.pomo .time{font:850 60px/1 ui-monospace,Consolas,monospace;letter-spacing:2px}
+.pomo .mode{font-size:11.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+/* tareas */
+.task{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:12px 14px;margin:7px 0}
+.task.done .txt{text-decoration:line-through;color:var(--muted)}
+.task .txt{flex:1;font-weight:650;font-size:14px}
+.task .meta{display:block;font-size:11.5px;color:var(--muted);font-weight:500}
+.prio{font-size:10px;font-weight:800;padding:3px 9px;border-radius:99px;letter-spacing:.5px}
+.prio.alta{background:rgba(239,68,68,.16);color:#f87171}.prio.media{background:rgba(245,165,36,.16);color:#fbbf24}.prio.baja{background:rgba(47,191,113,.16);color:#4ade80}
+.due{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.due.today{color:#f87171;font-weight:800}
+/* progreso */
+.next-exam{background:linear-gradient(120deg,rgba(239,68,68,.14),rgba(139,92,246,.12));border:1px solid rgba(239,68,68,.4);border-radius:var(--r);padding:18px}
+.next-exam .d{font-size:42px;font-weight:850;color:#f87171}
+.bars{display:flex;align-items:flex-end;gap:5px;height:130px;margin-top:10px}
+.bars .b{flex:1;background:linear-gradient(180deg,var(--accent),var(--accent2));border-radius:4px 4px 0 0;min-height:3px;position:relative}
+.bars .b span{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--muted)}
+.heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,12px);gap:3px;overflow-x:auto;padding-bottom:6px}
+.heat i{width:12px;height:12px;border-radius:3px;background:var(--panel2)}
+.heat i.l1{background:rgba(91,140,255,.35)}.heat i.l2{background:rgba(91,140,255,.6)}.heat i.l3{background:rgba(91,140,255,.85)}.heat i.l4{background:#5b8cff}
+/* chuleta */
+details{background:var(--panel);border:1px solid var(--line);border-radius:13px;margin:8px 0;overflow:hidden}
+summary{padding:14px 16px;font-weight:800;cursor:pointer;font-size:14.5px;list-style:none;display:flex;align-items:center;gap:10px}
+summary::after{content:'+';margin-left:auto;color:var(--accent);font-weight:850;font-size:18px}
+details[open] summary::after{content:'−'}
+details .body{padding:0 16px 14px;font-size:13.5px;line-height:1.7}
+details .body li{margin:4px 0}
+/* palette */
+#pal{position:fixed;inset:0;background:rgba(5,8,15,.7);backdrop-filter:blur(4px);z-index:100;display:flex;justify-content:center;padding-top:12vh}
+#pal .box{width:min(560px,92vw);background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.6);overflow:hidden;height:fit-content}
+#pal input{width:100%;border:none;border-radius:0;padding:16px 18px;font-size:15px;background:transparent}
+#pal .list{max-height:340px;overflow:auto}
+#pal .item{padding:12px 18px;cursor:pointer;display:flex;gap:10px;align-items:center;font-size:14px;font-weight:600}
+#pal .item.sel,#pal .item:hover{background:var(--panel2)}
+#pal .item .hint{margin-left:auto;color:var(--muted);font-size:11.5px}
+dialog{border:none;border-radius:16px;background:var(--panel);color:var(--text);padding:22px;max-width:430px;width:92%}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:linear-gradient(120deg,var(--accent),var(--accent2));color:#fff;padding:11px 18px;border-radius:12px;font-weight:700;font-size:13.5px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:200}
+.toast.show{opacity:1}
+footer{margin-top:24px;text-align:center;color:var(--muted);font-size:11.5px;padding-bottom:20px}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:9px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="logo">📗</div>
+  <div>
+    <h1>Contabilidad Pro</h1>
+    <div class="sub">Motor de estudio · FCE UNC · García 2026</div>
+  </div>
+  <div class="spacer"></div>
+  <div class="streak" id="streakBox" title="Días consecutivos con actividad">🔥 <span id="streakN">0</span></div>
+  <button class="btn ghost" onclick="toggleTheme()">🌗</button>
+  <button class="btn ghost" onclick="exportData()">⬇️</button>
+  <button class="btn ghost" onclick="document.getElementById('imp').click()">⬆️</button>
+  <input type="file" id="imp" class="hidden" accept=".json" onchange="importData(this)">
+  <span class="muted" style="font-size:11.5px">Apretá <span class="kbd">Ctrl K</span> para todo</span>
+</header>
+
+<div class="tabs" id="tabs">
+  <button class="tab active" data-t="cal">📅 Clases</button>
+  <button class="tab" data-t="jr">🧠 Asientos</button>
+  <button class="tab" data-t="cards">🃏 Flashcards</button>
+  <button class="tab" data-t="exam">📝 Simulacro</button>
+  <button class="tab" data-t="pomo">⏱️ Pomodoro</button>
+  <button class="tab" data-t="tasks">✅ Tareas</button>
+  <button class="tab" data-t="prog">📊 Progreso</button>
+  <button class="tab" data-t="cheat">📖 Chuleta</button>
+</div>
+
+<!-- ========== CLASES ========== -->
+<section id="t-cal">
+  <div class="grid2">
+    <div>
+      <div class="calnav">
+        <button class="btn sm" onclick="calMove(-1)">←</button>
+        <div class="mname" id="calName"></div>
+        <button class="btn sm" onclick="calMove(1)">→</button>
+        <button class="btn sm primary" onclick="calToday()">Hoy</button>
+      </div>
+      <div class="cal" id="calGrid"></div>
+      <div class="legend">
+        <span><i style="background:#3b82f6"></i>Teórica</span><span><i style="background:#a855f7"></i>Práctica</span>
+        <span><i style="background:#f59e0b"></i>Teór.-Práct.</span><span><i style="background:#10b981"></i>Repaso</span>
+        <span><i style="background:#ef4444"></i>Parcial</span><span><i style="background:#f5a524"></i>Feriado</span>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="sec">📌 Próximas clases y exámenes</h2>
+      <div id="agenda"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MOTOR CONTABLE ========== -->
+<section id="t-jr" class="hidden">
+  <div class="grid4" style="margin-bottom:14px">
+    <div class="stat blue"><div class="big" id="jrCount">0</div><div class="lbl">Asientos</div></div>
+    <div class="stat violet"><div class="big" id="jrActs">0</div><div class="lbl">Activos</div></div>
+    <div class="stat gold"><div class="big" id="jrPsts">0</div><div class="lbl">Pasivos</div></div>
+    <div class="stat green"><div class="big" id="jrRes">$ 0</div><div class="lbl">Resultado</div></div>
+  </div>
+  <div class="card">
+    <div class="subtabs" id="jrSub">
+      <button class="subtab active" data-s="diario">📕 Libro Diario</button>
+      <button class="subtab" data-s="mayor">📗 Mayor</button>
+      <button class="subtab" data-s="sumas">📘 Sumas y Saldos</button>
+      <button class="subtab" data-s="estados">📄 Estados Contables</button>
+      <button class="subtab" data-s="nuevo">✏️ Cargar asiento</button>
+    </div>
+    <div id="jr-diario"></div>
+    <div id="jr-mayor" class="hidden"></div>
+    <div id="jr-sumas" class="hidden"></div>
+    <div id="jr-estados" class="hidden"></div>
+    <div id="jr-nuevo" class="hidden">
+      <div class="row" style="margin-bottom:10px">
+        <input type="date" id="jFecha" value="2026-08-16">
+        <input id="jDesc" placeholder="Concepto del hecho económico" style="flex:1;min-width:220px">
+      </div>
+      <div id="jLines"></div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" onclick="jAddLine()">＋ Fila</button>
+        <span id="jBalance" class="muted"></span>
+        <span class="spacer" style="flex:1"></span>
+        <button class="btn primary" onclick="jSave()">💾 Guardar asiento</button>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--line);margin:16px 0">
+      <div class="row">
+        <span class="muted">Datos:</span>
+        <button class="btn sm" onclick="jLoadExample()">Recargar caso Distribuidora Andes</button>
+        <button class="btn sm danger" onclick="jClear()">Vaciar libro</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FLASHCARDS ========== -->
+<section id="t-cards" class="hidden">
+  <div class="grid4" style="margin-bottom:14px">
+    <div class="stat blue"><div class="big" id="stTotal">0</div><div class="lbl">Tarjetas</div></div>
+    <div class="stat gold"><div class="big" id="stDue">0</div><div class="lbl">Para repasar hoy</div></div>
+    <div class="stat green"><div class="big" id="stMastered">0</div><div class="lbl">Dominadas</div></div>
+    <div class="stat violet"><div class="big" id="stNew">0</div><div class="lbl">Nuevas</div></div>
+  </div>
+  <div class="card">
+    <h2 class="sec">Repetición espaciada · algoritmo SM-2</h2>
+    <div id="chips"></div>
+    <div class="sr-bar"><div id="srFill" style="width:0%"></div></div>
+    <div class="fc-stage"><div class="fc" id="fc" onclick="this.classList.toggle('flip')">
+      <div class="fc-face fc-front"><div id="fcQ"></div><div class="fc-why">Tocá para ver la respuesta</div></div>
+      <div class="fc-face fc-back"><div id="fcA"></div><div class="fc-why" id="fcNext"></div></div>
+    </div></div>
+    <div class="row" style="justify-content:space-between">
+      <span class="muted" id="fcCount"></span>
+      <div class="row">
+        <button class="btn" style="color:#f87171" onclick="grade(1)">✗ Fallé (otra vez hoy)</button>
+        <button class="btn" style="color:#fbbf24" onclick="grade(2)">😐 Difícil</button>
+        <button class="btn primary" onclick="grade(3)">👌 Bien</button>
+        <button class="btn" style="color:#4ade80" onclick="grade(4)">🚀 Fácil</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SIMULACRO ========== -->
+<section id="t-exam" class="hidden">
+  <div id="exSetup" class="card">
+    <h2 class="sec">Simulacro de parcial — estilo multiple choice</h2>
+    <div class="row">
+      <select id="exUnits"><option value="all">Todas las unidades (U1–U6)</option><option>U1</option><option>U2</option><option>U3</option><option>U4</option><option>U5</option><option>U6</option></select>
+      <select id="exCount"><option value="10">10 preguntas</option><option value="20" selected>20 preguntas</option></select>
+      <select id="exMin"><option value="10">10 minutos</option><option value="15" selected>15 minutos</option><option value="25">25 minutos</option></select>
+      <button class="btn primary" onclick="exStart()">▶ Comenzar</button>
+    </div>
+    <p class="muted" style="margin-bottom:0">Al final ves la corrección con la explicación de cada pregunta, como el feedback de un buen tutor. Historial: <span id="exHistory"></span></p>
+  </div>
+  <div id="exRun" class="q-card hidden">
+    <div class="row" style="justify-content:space-between;margin-bottom:14px">
+      <b id="exProg"></b><span class="timer" id="exTimer">15:00</span>
+    </div>
+    <div class="tagline" style="margin-bottom:10px"><span class="pill Rp" id="exUnit"></span></div>
+    <div style="font-size:16.5px;font-weight:750;line-height:1.5;margin-bottom:14px" id="exQ"></div>
+    <div id="exOpts"></div>
+    <div class="row" style="justify-content:flex-end;margin-top:10px">
+      <button class="btn primary" id="exNext" onclick="exNext()" disabled>Siguiente →</button>
+    </div>
+  </div>
+  <div id="exDone" class="q-card hidden"></div>
+</section>
+
+<!-- ========== POMODORO ========== -->
+<section id="t-pomo" class="hidden">
+  <div class="grid2">
+    <div class="card pomo">
+      <svg width="240" height="240" style="transform:rotate(-90deg)">
+        <circle cx="120" cy="120" r="104" fill="none" stroke="var(--panel2)" stroke-width="11"/>
+        <circle cx="120" cy="120" r="104" fill="none" stroke="url(#gr)" stroke-width="11" stroke-linecap="round" id="ringFg" stroke-dasharray="653" stroke-dashoffset="0"/>
+        <defs><linearGradient id="gr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b8cff"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+      </svg>
+      <div class="time" id="pomoTime" style="margin-top:-172px">25:00</div>
+      <div class="mode" id="pomoMode" style="margin-top:108px">🎯 Enfoque</div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn primary" id="pomoBtn" onclick="pomoToggle()">▶ Iniciar</button>
+        <button class="btn" onclick="pomoReset()">↺</button>
+        <button class="btn ghost" onclick="pomoSkip()">⏭</button>
+      </div>
+      <div class="muted" id="pomoRounds">🍅 0 pomodoros hoy</div>
+    </div>
+    <div class="card">
+      <h2 class="sec">Registrar sesión</h2>
+      <div class="row">
+        <select id="sesType"><option>Lectura</option><option>Práctica</option><option>Caso Harvard</option><option>Asientos</option><option>Flashcards</option><option>Simulacro</option><option>Programación</option></select>
+        <select id="sesUnit"><option>U1</option><option>U2</option><option>U3</option><option>U4</option><option>U5</option><option>U6</option><option>Repaso parcial</option><option>GitHub</option></select>
+        <input type="number" id="sesMin" value="25" min="5" style="width:80px"> <span class="muted">min</span>
+        <button class="btn" onclick="addSession()">＋ Registrar</button>
+      </div>
+      <h2 class="sec" style="margin-top:18px">Últimas sesiones</h2>
+      <div id="sesList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TAREAS ========== -->
+<section id="t-tasks" class="hidden">
+  <div class="card">
+    <h2 class="sec">Nueva tarea</h2>
+    <div class="row">
+      <input id="tTitle" placeholder="Ej: Resolver autoevaluación U2" style="flex:1;min-width:200px">
+      <select id="tUnit"><option>U1</option><option>U2</option><option>U3</option><option>U4</option><option>U5</option><option>U6</option><option>U7-U13</option><option>General</option></select>
+      <select id="tPrio"><option value="alta">🔴 Alta</option><option value="media">🟡 Media</option><option value="baja">🟢 Baja</option></select>
+      <input type="date" id="tDue">
+      <button class="btn primary" onclick="addTask()">＋ Agregar</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <span class="muted">Rápidas:</span>
+      <button class="btn sm" onclick="quickTask('Leer apunte')">📖 Leer</button>
+      <button class="btn sm" onclick="quickTask('Resolver autoevaluación')">📝 Autoevaluación</button>
+      <button class="btn sm" onclick="quickTask('Practicar asientos')">🧠 Asientos</button>
+      <button class="btn sm" onclick="quickTask('Mini-caso Harvard')">🎓 Mini-caso</button>
+      <button class="btn sm" onclick="quickTask('Simulacro de parcial')">🧪 Simulacro</button>
+    </div>
+  </div>
+  <div id="taskList" style="margin-top:14px"></div>
+</section>
+
+<!-- ========== PROGRESO ========== -->
+<section id="t-prog" class="hidden">
+  <div class="grid4">
+    <div class="stat red"><div class="big" id="pgExam">—</div><div class="lbl">Días al parcial</div></div>
+    <div class="stat blue"><div class="big" id="pgMin">0</div><div class="lbl">Minutos totales</div></div>
+    <div class="stat green"><div class="big" id="pgDone">0</div><div class="lbl">Tareas hechas</div></div>
+    <div class="stat violet"><div class="big" id="pgBest">0%</div><div class="lbl">Mejor simulacro</div></div>
+  </div>
+  <div class="next-exam" style="margin-top:14px">
+    <h2 class="sec" style="color:#fca5a5">⏳ Próximo examen</h2>
+    <div class="d" id="pgExamName">—</div>
+    <div class="muted" id="pgExamDate"></div>
+  </div>
+  <div class="grid2" style="margin-top:14px">
+    <div class="card"><h2 class="sec">Mapa de constancia (12 semanas)</h2><div class="heat" id="heat"></div><p class="muted" style="margin-bottom:0">Cada cuadradito es un día. Cuanto más azul, más minutos estudiados.</p></div>
+    <div class="card"><h2 class="sec">Minutos por día (14 días)</h2><div class="bars" id="chart"></div></div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h2 class="sec">Dominio por unidad (flashcards + simulacro)</h2>
+    <div id="unitMastery"></div>
+  </div>
+</section>
+
+<!-- ========== CHULETA ========== -->
+<section id="t-cheat" class="hidden" id2="cheatList"></section>
+
+<footer>Contabilidad Pro v2 · motor contable + SM-2 + simulacros · tus datos viven solo en tu navegador · hecho para rendir en modo Harvard 🎓</footer>
+</div>
+
+<dialog id="evDlg"><h3 id="dlgTitle" style="margin:0 0 8px"></h3><p class="muted" id="dlgBody" style="line-height:1.65"></p><button class="btn primary" onclick="evDlg.close()">Cerrar</button></dialog>
+<div id="pal" class="hidden"><div class="box"><input id="palIn" placeholder="Escribí un comando… (ej: pomodoro, asiento, simulacro)"><div class="list" id="palList"></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+/* ================================================================
+   DATOS — cronograma García 2026
+================================================================ */
+const EVENTS=[
+ {d:'2026-08-03',t:'U1 Autogest.',k:'teorica',x:'Unidad I — Contabilidad e Información Contable (Aula Virtual)'},
+ {d:'2026-08-03',t:'U2 Teórica',k:'teorica',x:'Unidad II — Elementos y Variaciones Patrimoniales'},
+ {d:'2026-08-05',t:'U3 Teórica',k:'teorica',x:'Unidad III — Sistema Contable'},
+ {d:'2026-08-07',t:'Práctica U1–U3',k:'practica',x:'Cuentas y variaciones patrimoniales'},
+ {d:'2026-08-10',t:'U4 Teórica',k:'teorica',x:'Disponibilidades: Caja'},
+ {d:'2026-08-12',t:'U4 Teórica',k:'teorica',x:'Disponibilidades: Bancos'},
+ {d:'2026-08-14',t:'Práctica',k:'practica',x:'Disponibilidades'},
+ {d:'2026-08-17',t:'Feriado',k:'feriado',x:'Paso a la inmortalidad del Gral. San Martín'},
+ {d:'2026-08-19',t:'U5 Teórica',k:'teorica',x:'Unidad V — Inversiones'},
+ {d:'2026-08-21',t:'Práctica',k:'practica',x:'Inversiones'},
+ {d:'2026-08-24',t:'U6 Teórica',k:'teorica',x:'Unidad VI — Cuentas por Cobrar'},
+ {d:'2026-08-26',t:'U6 Teórica',k:'teorica',x:'Unidad VI — Cuentas por Cobrar'},
+ {d:'2026-08-28',t:'Práctica',k:'practica',x:'Cuentas por Cobrar'},
+ {d:'2026-08-31',t:'Práctica',k:'practica',x:'Cuentas por Cobrar'},
+ {d:'2026-09-02',t:'Repaso 1er P.',k:'repaso',x:'Repaso teórico-práctico'},
+ {d:'2026-09-04',t:'🔴 PRIMER PARCIAL',k:'eval',x:'Unidades I a VI'},
+ {d:'2026-09-07',t:'U7 Teórica',k:'teorica',x:'Bienes de Cambio'},
+ {d:'2026-09-09',t:'U7 Teórica',k:'teorica',x:'Bienes de Cambio'},
+ {d:'2026-09-11',t:'Práctica',k:'practica',x:'Bienes de Cambio'},
+ {d:'2026-09-14',t:'U8 Teórica',k:'teorica',x:'Bienes de Uso'},
+ {d:'2026-09-16',t:'U8 Teór.-Práct.',k:'tp',x:'Bienes de Uso'},
+ {d:'2026-09-18',t:'Práctica',k:'practica',x:'Bienes de Uso'},
+ {d:'2026-09-21',t:'Asueto',k:'feriado',x:'Día del Estudiante'},
+ {d:'2026-09-23',t:'U9 Teór.-Práct.',k:'tp',x:'Activos Intangibles y Pasivo'},
+ {d:'2026-09-25',t:'Práctica',k:'practica',x:'Bienes de Uso y Pasivo'},
+ {d:'2026-09-28',t:'U10 Teór.-Práct.',k:'tp',x:'Pasivo y Patrimonio Neto'},
+ {d:'2026-09-30',t:'Feriado',k:'feriado',x:'Fundación de Córdoba'},
+ {d:'2026-10-02',t:'Práctica',k:'practica',x:'Pasivo'},
+ {d:'2026-10-05',t:'Práctica',k:'practica',x:'Patrimonio Neto'},
+ {d:'2026-10-07',t:'Repaso 2do P.',k:'repaso',x:'Repaso teórico-práctico'},
+ {d:'2026-10-09',t:'🔴 SEGUNDO PARCIAL',k:'eval',x:'Unidades VII a XI'},
+ {d:'2026-10-12',t:'Feriado',k:'feriado',x:'Día de la Diversidad Cultural'},
+ {d:'2026-10-14',t:'U12 Teórica',k:'teorica',x:'Balance General'},
+ {d:'2026-10-16',t:'Práctica',k:'practica',x:'Balance General'},
+ {d:'2026-10-19',t:'U12 Teórica',k:'teorica',x:'Informes Contables'},
+ {d:'2026-10-21',t:'U12 Teór.-Práct.',k:'tp',x:'Informes Contables'},
+ {d:'2026-10-23',t:'Práctica',k:'practica',x:'Balance General'},
+ {d:'2026-10-26',t:'Práctica',k:'practica',x:'Balance General'},
+ {d:'2026-10-28',t:'Práctica',k:'practica',x:'Informes Contables'},
+ {d:'2026-10-30',t:'Repaso 3er P.',k:'repaso',x:'Repaso teórico-práctico'},
+ {d:'2026-11-02',t:'🔴 TERCER PARCIAL',k:'eval',x:'U. XII (promoción) + recuperatorios 1 y 2'},
+ {d:'2026-11-06',t:'CIERRE',k:'feriado',x:'Cierre de regularidad'},
+];
+const PARCIALES=[{n:'Primer Parcial — U. I a VI',d:'2026-09-04'},{n:'Segundo Parcial — U. VII a XI',d:'2026-10-09'},{n:'Tercer Parcial + Recuperatorios',d:'2026-11-02'}];
+
+/* ================================================================
+   DATOS — flashcards U1–U6 (36)
+================================================================ */
+const CARDS=[
+ {u:'U1',q:'¿Qué es la contabilidad?',a:'Actividad y disciplina que identifica, mide y comunica información económica y financiera de un ente, útil para la toma de decisiones.'},
+ {u:'U1',q:'Contabilidad vs. teneduría de libros',a:'La teneduría es solo la técnica de registro; la contabilidad además analiza, mide, sintetiza e informa.'},
+ {u:'U1',q:'¿Qué es un ente contable?',a:'Entidad económica autónoma cuyo patrimonio se registra, distinta de las personas que lo conforman.'},
+ {u:'U1',q:'Recursos y fuentes',a:'Recursos: bienes y derechos del ente. Fuentes: quiénes los aportan — terceros (pasivo) y socios (patrimonio neto).'},
+ {u:'U1',q:'Usuarios internos vs. externos',a:'Internos: dirección y empleados (gestión, presupuestos). Externos: inversores, acreedores, Estado, clientes (estados contables).'},
+ {u:'U1',q:'Aporte de Luca Pacioli',a:'Difundió la partida doble en 1494 (Summa de Arithmetica): todo hecho tiene doble efecto y el registro equilibra.'},
+ {u:'U2',q:'Elementos patrimoniales',a:'Activo, pasivo y PN (estáticos); ingresos, costos, ganancias y pérdidas (dinámicos).'},
+ {u:'U2',q:'Variación permutativa vs. modificativa',a:'Permutativa: cambia composición, no el resultado. Modificativa: altera el resultado o el PN.'},
+ {u:'U2',q:'Criterio de lo devengado',a:'Se registra el hecho cuando nace el derecho u obligación, independiente del cobro o pago.'},
+ {u:'U2',q:'Valor histórico vs. corriente',a:'Histórico: costo de incorporación. Corriente: valor de mercado al cierre (cotización, reposición, VNR).'},
+ {u:'U2',q:'Interés implícito',a:'Componente financiero oculto: diferencia entre precio de contado y total a pagar a plazo.'},
+ {u:'U2',q:'Límite a la medición',a:'Ningún activo supera su valor recuperable: flujo futuro por su uso + valor de venta.'},
+ {u:'U3',q:'Etapas del proceso contable',a:'Registración (Diario) → clasificación (Mayor) → síntesis (sumas y saldos) → exposición (estados).'},
+ {u:'U3',q:'¿Qué es el ejercicio económico?',a:'Período entre dos cierres, máximo un año, en el que se mide el resultado.'},
+ {u:'U3',q:'Plan de cuentas',a:'Listado ordenado y codificado de las cuentas del ente (1 Activo → 1.1 Disponibilidades → 1.1.01 Caja).'},
+ {u:'U3',q:'Manual de cuentas',a:'Ficha por cuenta: qué registra, cuándo se debita y acredita, y qué significa su saldo.'},
+ {u:'U3',q:'Requisitos legales de registros',a:'Libros Diario e Inventarios y Balances (C. de Comercio); cronológico, sin espacios en blanco, moneda común.'},
+ {u:'U3',q:'Procesamiento independiente vs. integrado',a:'Independiente: subsistemas aparte volcados luego al contable. Integrado: base de datos única.'},
+ {u:'U4',q:'Componentes de caja',a:'Billetes, monedas, cheques comunes a la vista, giros postales y telegráficos.'},
+ {u:'U4',q:'¿Qué es el fondo fijo?',a:'Monto constante para gastos menores; se repone contra comprobantes por lo gastado.'},
+ {u:'U4',q:'¿Qué es la conciliación bancaria?',a:'Procedimiento que explica diferencias entre saldo según libros y saldo según banco.'},
+ {u:'U4',q:'Causas típicas de diferencia',a:'Cheques emitidos no cobrados, depósitos en tránsito, débitos/créditos no registrados, errores.'},
+ {u:'U4',q:'¿Qué ajusto tras conciliar?',a:'Solo lo que el banco registró y yo no: comisiones, intereses, impuestos. Los tránsitos no se ajustan.'},
+ {u:'U4',q:'Cheque de pago diferido',a:'No es caja: cobro futuro → crédito por cobrar (corriente o no corriente según plazo).'},
+ {u:'U5',q:'¿Qué es una inversión?',a:'Bien que no se usa en la operatoria ni se revende habitualmente: se retiene por renta o revalorización.'},
+ {u:'U5',q:'Clasificación de inversiones',a:'En entidades financieras, inmobiliarias y en títulos y valores.'},
+ {u:'U5',q:'Plazo fijo al cierre',a:'Se devengan los intereses ganados por el transcurso del tiempo, aunque no se cobren.'},
+ {u:'U5',q:'Acciones al cierre',a:'Corriente: cotización. Histórico: costo de incorporación más devengos.'},
+ {u:'U5',q:'Vender acciones bajo el costo',a:'Pérdida del ejercicio por la diferencia costo − precio de venta.'},
+ {u:'U5',q:'Inversión inmobiliaria',a:'Inmueble no usado en la actividad (sino sería bien de uso): se mantiene para alquilar o revalorizar.'},
+ {u:'U6',q:'Créditos por ventas vs. otros',a:'Por ventas: nacen de la actividad principal. Otros: alquileres a cobrar, adelantos, anticipos.'},
+ {u:'U6',q:'¿Qué es la previsión por incobrabilidad?',a:'Estimación de la porción de créditos que probablemente no se cobre (prudencia).'},
+ {u:'U6',q:'Métodos de la previsión',a:'Análisis individual de saldos o porcentaje global sobre ventas / saldos de deudores.'},
+ {u:'U6',q:'¿Dónde se informa la previsión?',a:'Deducción de los créditos (activo); el gasto va a resultados. No es pasivo.'},
+ {u:'U6',q:'Cliente en convocatoria de acreedores',a:'Se previsiona lo que se estima no recuperar; si es cierto, baja directa del crédito.'},
+ {u:'U6',q:'Cobra un deudor previsionado',a:'Se anula la previsión usada y se reconoce ganancia por recuperación.'},
+];
+
+/* ================================================================
+   DATOS — simulacro (20 preguntas con explicación)
+================================================================ */
+const QUIZ=[
+ {u:'U1',q:'La contabilidad, como disciplina, tiene por objeto:',o:['Registrar hechos para pagar impuestos','Proveer información útil para la toma de decisiones','Ordenar los contratos del ente','Calcular la rentabilidad de los bancos'],k:1,w:'Es un sistema de información: identifica, mide y comunica datos útiles para decidir.'},
+ {u:'U1',q:'La teneduría de libros es:',o:['Sinónimo exacto de contabilidad','Solo la técnica de registro de los hechos','Un método de auditoría','Una teoría de medición'],k:1,w:'La teneduría es la parte técnica; la contabilidad también mide, analiza e informa.'},
+ {u:'U1',q:'El ente contable se define como:',o:['La persona del dueño','Cualquier empresa con fines de lucro','Entidad autónoma distinta de sus propietarios','Solo las sociedades anónimas'],k:2,w:'Principio de ente: el patrimonio del ente no se mezcla con el de sus dueños.'},
+ {u:'U1',q:'¿Cuál es un usuario EXTERNO de la información contable?',o:['El gerente de marketing','El jefe de producción','Un banco que analiza un préstamo','Un supervisor de planta'],k:2,w:'El banco es externo: usa los estados contables para decidir el crédito.'},
+ {u:'U1',q:'La partida doble implica que:',o:['Cada hecho afecta a dos entes','Todo registro tiene débito y crédito que se igualan','Se registran dos ejercicios','Hay dos libros legales'],k:1,w:'Igualdad de débitos y créditos en cada asiento (Pacioli, 1494).'},
+ {u:'U2',q:'Vendo a crédito el 20/11 y cobro el 20/12. El ingreso se devenga el:',o:['20/12 al cobrar','20/11 al nacer el derecho','31/12 al cierre','Mitad en cada fecha'],k:1,w:'Lo devengado manda: el ingreso existe cuando nace el derecho, no cuando se cobra.'},
+ {u:'U2',q:'Comprar una camioneta al contado genera una variación:',o:['Modificativa negativa','Permutativa','Modificativa positiva','No se registra'],k:1,w:'Cambia la composición del activo (caja por rodado) sin alterar el resultado.'},
+ {u:'U2',q:'El interés implícito de una venta a plazo es:',o:['El IVA de la operación','La diferencia entre precio total a plazo y precio de contado','Un gasto bancario','La comisión del vendedor'],k:1,w:'Esa diferencia es el componente financiero oculto de la operación.'},
+ {u:'U2',q:'El costo de reposición es un valor:',o:['Histórico','Corriente','Devengado','Nominal'],k:1,w:'Es lo que costaría reponer el bien hoy → valor corriente.'},
+ {u:'U2',q:'El límite a la medición de un activo es:',o:['Su cotización bursátil','Su valor recuperable','Su costo original','Lo que diga el contador'],k:1,w:'Nunca se mide por encima de lo que puede devengar por uso + su venta.'},
+ {u:'U3',q:'El orden correcto del proceso contable es:',o:['Estados → Mayor → Diario','Diario → Mayor → Sumas y saldos → Estados','Mayor → Diario → Estados','Diario → Estados → Mayor'],k:1,w:'Registración, clasificación, síntesis y exposición.'},
+ {u:'U3',q:'El plan de cuentas es:',o:['Un listado codificado de cuentas del ente','El libro legal obligatorio','Un informe para el banco','El manual de procedimientos'],k:0,w:'Listado ordenado y codificado; el manual explica cada cuenta.'},
+ {u:'U3',q:'Los libros que exige el Código de Comercio son:',o:['Mayor y Caja','Diario e Inventarios y Balances','Balance y Resultados','Solo el Diario'],k:1,w:'Art. 44 C.Com.: Diario e Inventarios y Balances.'},
+ {u:'U3',q:'El procesamiento integrado se caracteriza por:',o:['Cada área registra aparte','Una base de datos única que alimenta todo','Solo registros manuales','Duplicar el registro en cada libro'],k:1,w:'El hecho se registra una sola vez y se replica en todos los salidas.'},
+ {u:'U4',q:'Un cheque de pago diferido recibido es:',o:['Caja, siempre','Un crédito por cobrar','Un bien de uso','Una inversión inmobiliaria'],k:1,w:'El cobro es futuro: integra los créditos (plazo > 1 año: no corriente).'},
+ {u:'U4',q:'El fondo fijo se repone:',o:['Cada fin de mes con un ajuste global','Contra comprobantes por lo exacto gastado','Nunca, es fijo','Con un préstamo bancario'],k:1,w:'Se repone por lo gastado documentado, dejándolo en el monto original.'},
+ {u:'U4',q:'En la conciliación, una comisión debitada por el banco que no registraste:',o:['No se ajusta','Se ajusta debitando gasto financiero','Se ajusta como depósito en tránsito','Se reclama al banco'],k:1,w:'El banco ya la registró: yo debo reconocer el gasto en mis libros.'},
+ {u:'U5',q:'Un inmueble comprado para alquilar es:',o:['Bien de uso','Inversión inmobiliaria','Bien de cambio','Disponibilidad'],k:1,w:'No se usa en la actividad: se retiene por renta → inversión.'},
+ {u:'U5',q:'Al cierre, un plazo fijo que vence el año siguiente:',o:['Se da de baja','Devenga los intereses ganados a la fecha','Pasa a resultados sin registrar','Se convierte en caja'],k:1,w:'Los intereses se devengan con el tiempo, cobren o no.'},
+ {u:'U6',q:'La previsión por incobrabilidad se informa:',o:['Como pasivo','Restando de los créditos en el activo','Como patrimonio negativo','En notas, sin afectar saldos'],k:1,w:'Es deducción del activo; el gasto por desvalorización va a resultados.'},
+];
+
+/* ================================================================
+   DATOS — plan de cuentas y caso ejemplo
+================================================================ */
+const CUENTAS=[
+ {c:'1.1.01',n:'Caja',t:'A'},
+ {c:'1.1.02',n:'Bancos',t:'A'},
+ {c:'1.2.01',n:'Deudores por ventas',t:'A'},
+ {c:'1.2.02',n:'Previsión por incobrabilidad',t:'A'}, // regularizadora (saldo acreedor)
+ {c:'1.3.01',n:'Mercaderías',t:'A'},
+ {c:'1.4.01',n:'Rodados',t:'A'},
+ {c:'1.5.01',n:'Plazo fijo a 180 días',t:'A'},
+ {c:'1.5.02',n:'Inversiones en acciones',t:'A'},
+ {c:'2.1.01',n:'Proveedores',t:'P'},
+ {c:'2.1.02',n:'Préstamo bancario',t:'P'},
+ {c:'3.1.01',n:'Capital social',t:'N'},
+ {c:'4.1.01',n:'Ventas de mercaderías',t:'Rp'},
+ {c:'4.2.01',n:'Costo de mercaderías vendidas',t:'Rn'},
+ {c:'4.3.01',n:'Intereses ganados',t:'Rp'},
+ {c:'4.4.01',n:'Gastos de comercialización',t:'Rn'},
+ {c:'4.4.02',n:'Gastos de administración',t:'Rn'},
+ {c:'4.4.03',n:'Gastos financieros',t:'Rn'},
+];
+const CUENTA_BY={}; CUENTAS.forEach(x=>CUENTA_BY[x.c]=x);
+const TIPO_PILL={A:'A',P:'P',N:'PN',Rp:'R+',Rn:'R−'};
+const TIPO_NAME={A:'Activo',P:'Pasivo',N:'Patrimonio Neto',Rp:'Ingreso / Ganancia',Rn:'Costo / Pérdida'};
+
+const CASO_ANDES=[
+ {f:'2026-08-01',d:'Aporte inicial de los socios',l:[{c:'1.1.01',de:500000,ha:0},{c:'3.1.01',de:0,ha:500000}]},
+ {f:'2026-08-01',d:'Préstamo bancario a 2 años',l:[{c:'1.1.01',de:300000,ha:0},{c:'2.1.02',de:0,ha:300000}]},
+ {f:'2026-08-02',d:'Compra de mercaderías al contado',l:[{c:'1.3.01',de:200000,ha:0},{c:'1.1.01',de:0,ha:200000}]},
+ {f:'2026-08-03',d:'Compra de mercaderías a crédito',l:[{c:'1.3.01',de:150000,ha:0},{c:'2.1.01',de:0,ha:150000}]},
+ {f:'2026-08-05',d:'Venta al contado (costo 120.000)',l:[{c:'1.1.01',de:180000,ha:0},{c:'4.1.01',de:0,ha:180000},{c:'4.2.01',de:120000,ha:0},{c:'1.3.01',de:0,ha:120000}]},
+ {f:'2026-08-08',d:'Venta a crédito (costo 140.000)',l:[{c:'1.2.01',de:220000,ha:0},{c:'4.1.01',de:0,ha:220000},{c:'4.2.01',de:140000,ha:0},{c:'1.3.01',de:0,ha:140000}]},
+ {f:'2026-08-10',d:'Pago parcial a proveedores',l:[{c:'2.1.01',de:100000,ha:0},{c:'1.1.01',de:0,ha:100000}]},
+ {f:'2026-08-12',d:'Cobro a clientes',l:[{c:'1.1.01',de:160000,ha:0},{c:'1.2.01',de:0,ha:160000}]},
+ {f:'2026-08-15',d:'Sueldos y alquiler del mes',l:[{c:'4.4.02',de:50000,ha:0},{c:'1.1.01',de:0,ha:50000}]},
+ {f:'2026-08-15',d:'Publicidad pagada',l:[{c:'4.4.01',de:18000,ha:0},{c:'1.1.01',de:0,ha:18000}]},
+ {f:'2026-08-20',d:'Colocación de plazo fijo',l:[{c:'1.5.01',de:100000,ha:0},{c:'1.1.01',de:0,ha:100000}]},
+ {f:'2026-08-31',d:'Intereses devengados del plazo fijo',l:[{c:'1.5.01',de:2500,ha:0},{c:'4.3.01',de:0,ha:2500}]},
+ {f:'2026-08-31',d:'Previsión por incobrabilidad (3% s/deudores)',l:[{c:'4.4.02',de:1800,ha:0},{c:'1.2.02',de:0,ha:1800}]},
+];
+
+const CHEAT=[
+ {u:'U1 — Contabilidad e información contable',items:[
+  'Contabilidad = sistema de información para decidir (identifica, mide, comunica).',
+  'Ente ≠ dueños. Recursos = bienes y derechos; Fuentes = pasivo (terceros) + PN (socios).',
+  'Usuarios internos → gestión. Externos → estados contables (inversores, bancos, Estado).',
+  'Pacioli (1494) difunde la partida doble: débito = crédito en cada asiento.']},
+ {u:'U2 — Elementos y variaciones patrimoniales',items:[
+  'Estáticos: Activo, Pasivo, PN. Dinámicos: ingresos, costos, ganancias, pérdidas.',
+  'Permutativa: cambia composición. Modificativa: cambia resultado/PN.',
+  'Devengado: registro al nacer derecho/obligación (no al cobrar/pagar).',
+  'Histórico = costo origen; Corriente = mercado al cierre (cotización, reposición, VNR).',
+  'Interés implícito = total a plazo − precio contado.',
+  'Límite: valor recuperable (uso + venta).']},
+ {u:'U3 — Sistema contable',items:[
+  'Proceso: Diario → Mayor → Sumas y saldos → Estados contables.',
+  'Ejercicio económico: máximo 1 año entre cierres.',
+  'Plan = listado codificado; Manual = ficha de cada cuenta (débitos, créditos, saldo).',
+  'C.Com. art. 44: libros Diario e Inventarios y Balances; sin espacios en blanco.',
+  'Procesamiento integrado = una base de datos única.']},
+ {u:'U4 — Disponibilidades',items:[
+  'Caja: billetes, monedas, cheques a la vista, giros.',
+  'Cheque diferido → crédito por cobrar, NO caja.',
+  'Fondo fijo: monto constante, reposición contra comprobantes.',
+  'Conciliación: cheques en tránsito y depósitos en tránsito NO se ajustan; comisiones e intereses del banco SÍ (gasto/ingreso en libros).',
+  'Faltante de caja → pérdida; sobrante → ingreso/gasto reintegrado.']},
+ {u:'U5 — Inversiones',items:[
+  'Inversión = no se usa en la actividad ni se revende: renta o revalorización.',
+  'Tipos: entidades financieras, inmobiliarias, títulos y valores.',
+  'Plazo fijo: devengar intereses con el tiempo.',
+  'Acciones: corriente→cotización; histórico→costo.',
+  'Vender bajo costo → pérdida del ejercicio.']},
+ {u:'U6 — Cuentas por cobrar',items:[
+  'Por ventas (actividad principal) vs. otros créditos (alquileres, adelantos).',
+  'Previsión por incobrabilidad: estimación por prudencia; deduce el activo, no es pasivo.',
+  'Métodos: análisis individual vs. % sobre ventas/saldos.',
+  'Quiebra → previsionar %; certeza → baja directa.',
+  'Recupera lo previsionado → ganancia.']},
+];
+
+/* ================================================================
+   ESTADO
+================================================================ */
+const LS='contapro-v2';
+let S;
+try{S=JSON.parse(localStorage.getItem(LS))}catch(e){S=null}
+if(!S)S={sr:{},tasks:[],sessions:[],pomo:{},act:{},jr:{entries:CASO_ANDES.map((x,i)=>({...x,id:i+1}))},exHistory:[],theme:'dark'};
+else{
+  if(!S.jr)S.jr={entries:CASO_ANDES.map((x,i)=>({...x,id:i+1}))};
+  if(!S.jr.entries)S.jr.entries=[];
+  if(!S.sr)S.sr={};if(!S.sessions)S.sessions=[];if(!S.tasks)S.tasks=[];if(!S.pomo)S.pomo={};if(!S.act)S.act={};if(!S.exHistory)S.exHistory=[];
+}
+const save=()=>localStorage.setItem(LS,JSON.stringify(S));
+const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const fmt=n=>'$ '+Number(n||0).toLocaleString('es-AR');
+const addDays=(iso,n)=>{const d=new Date(iso+'T12:00:00');d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
+function markAct(){S.act[todayISO()]=1;save()}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toast._h);toast._h=setTimeout(()=>t.classList.remove('show'),1900)}
+function toggleTheme(){S.theme=S.theme==='dark'?'light':'dark';applyTheme();save()}
+function applyTheme(){document.body.dataset.theme=S.theme==='light'?'light':''}
+
+/* ================================================================
+   TABS + TECLADO
+================================================================ */
+const TAB_IDS=['cal','jr','cards','exam','pomo','tasks','prog','cheat'];
+function goto(t){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.t===t));TAB_IDS.forEach(x=>document.getElementById('t-'+x).classList.toggle('hidden',x!==t));window.scrollTo({top:0,behavior:'smooth'})}
+document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(b)goto(b.dataset.t)});
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();palToggle();return}
+  if(e.key==='Escape'){palEl.classList.add('hidden');return}
+  const tag=document.activeElement.tagName;
+  if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA')return;
+  const n=parseInt(e.key);if(n>=1&&n<=8)goto(TAB_IDS[n-1]);
+});
+
+/* ================================================================
+   CALENDARIO + AGENDA
+================================================================ */
+const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DIAS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+let calCur=new Date();
+const KLBL={teorica:'Teórica',practica:'Práctica',tp:'Teór.-Práct.',repaso:'Repaso',eval:'Evaluativa',feriado:'No laborable'};
+function calRender(){
+  const y=calCur.getFullYear(),m=calCur.getMonth();
+  document.getElementById('calName').textContent=MESES[m]+' '+y;
+  const g=document.getElementById('calGrid');g.innerHTML='';
+  ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].forEach(w=>g.insertAdjacentHTML('beforeend','<div class="wd">'+w+'</div>'));
+  const start=(new Date(y,m,1).getDay()+6)%7,last=new Date(y,m+1,0).getDate();
+  for(let i=0;i<start;i++)g.insertAdjacentHTML('beforeend','<div class="day other"></div>');
+  for(let d=1;d<=last;d++){
+    const ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const evs=EVENTS.filter(e=>e.d===ds);
+    let html='<div class="n">'+d+'</div>';
+    evs.slice(0,3).forEach(e=>{html+='<div class="ev '+e.k+'" data-d="'+e.d+'">'+e.t+'</div>'});
+    if(evs.length>3)html+='<div class="muted" style="font-size:10px">+'+(evs.length-3)+' más</div>';
+    g.insertAdjacentHTML('beforeend','<div class="day'+(ds===todayISO()?' today':'')+'">'+html+'</div>');
+  }
+}
+document.getElementById('calGrid').addEventListener('click',e=>{const el=e.target.closest('.ev');if(el)evDetail(el.dataset.d)});
+function calMove(n){calCur.setMonth(calCur.getMonth()+n);calRender()}
+function calToday(){calCur=new Date();calRender()}
+const evDlg=document.getElementById('evDlg');
+function evDetail(d){
+  const evs=EVENTS.filter(e=>e.d===ds_safe(d));
+  document.getElementById('dlgTitle').textContent=evs[0]?evs[0].t:d;
+  document.getElementById('dlgBody').innerHTML=evs.map(e=>'<b>'+KLBL[e.k]+'</b> — '+e.x).join('<br>')+'<br><br><b>Fecha:</b> '+d.split('-').reverse().join('/');
+  evDlg.showModal();
+}
+function ds_safe(d){return d}
+function agendaRender(){
+  const up=EVENTS.filter(e=>e.d>=todayISO()).slice(0,9);
+  document.getElementById('agenda').innerHTML=up.map(e=>{
+    const dt=new Date(e.d+'T12:00:00');
+    return '<div class="agenda-item"><div class="agenda-date"><b>'+dt.getDate()+'</b><span>'+DIAS[dt.getDay()]+'</span></div><div style="flex:1"><b style="font-size:13.5px">'+e.t+'</b><div class="muted">'+e.x+'</div></div>'+(e.k==='eval'?'<span class="pill Rn">EXAMEN</span>':'')+'</div>';
+  }).join('')||'<p class="muted">No quedan clases esta cuatrimestre.</p>';
+}
+
+/* ================================================================
+   MOTOR CONTABLE
+================================================================ */
+document.getElementById('jrSub').addEventListener('click',e=>{
+  const b=e.target.closest('.subtab');if(!b)return;
+  document.querySelectorAll('#jrSub .subtab').forEach(x=>x.classList.toggle('active',x===b));
+  ['diario','mayor','sumas','estados','nuevo'].forEach(s=>document.getElementById('jr-'+s).classList.toggle('hidden',s!==b.dataset.s));
+  if(b.dataset.s==='nuevo')jRenderForm();
+});
+function jrTotals(){
+  const t={A:0,P:0,N:0,Rp:0,Rn:0};let n=0;
+  S.jr.entries.forEach(a=>{n++;a.l.forEach(li=>{const c=CUENTA_BY[li.c];if(!c)return;t[c.t]+=li.de-li.ha})});
+  const res=-t.Rp-t.Rn;
+  document.getElementById('jrCount').textContent=n;
+  document.getElementById('jrActs').textContent=Math.round(t.A).toLocaleString('es-AR');
+  document.getElementById('jrPsts').textContent=Math.round(Math.abs(t.P)).toLocaleString('es-AR');
+  document.getElementById('jrRes').textContent=fmt(res);
+  return {t,res};
+}
+function jrRenderDiario(){
+  const box=document.getElementById('jr-diario');
+  box.innerHTML=S.jr.entries.map((a,i)=>'<div class="asiento"><div class="head"><b>Asiento '+(i+1)+'</b><span class="muted">'+a.f.split('-').reverse().join('/')+'</span><span style="flex:1">'+a.d+'</span></div>'+
+   '<table class="conta"><tr><th>Cuenta</th><th style="text-align:right">Debe</th><th style="text-align:right">Haber</th></tr>'+
+   a.l.map(li=>'<tr><td>'+CUENTA_BY[li.c].c+' · '+CUENTA_BY[li.c].n+' <span class="pill '+CUENTA_BY[li.c].t+'">'+TIPO_PILL[CUENTA_BY[li.c].t]+'</span></td><td class="num">'+(li.de?li.de.toLocaleString('es-AR'):'')+'</td><td class="num">'+(li.ha?li.ha.toLocaleString('es-AR'):'')+'</td></tr>').join('')+
+   '<tr class="total"><td>Totales</td><td class="num">'+a.l.reduce((x,y)=>x+y.de,0).toLocaleString('es-AR')+'</td><td class="num">'+a.l.reduce((x,y)=>x+y.ha,0).toLocaleString('es-AR')+'</td></tr></table></div>').join('')||'<p class="muted">Libro vacío. Cargá el caso de ejemplo o un asiento nuevo.</p>';
+}
+function jrMayorData(){
+  const M={};
+  S.jr.entries.forEach(a=>a.l.forEach(li=>{
+    if(!M[li.c])M[li.c]={de:0,ha:0,moves:[]};
+    M[li.c].de+=li.de;M[li.c].ha+=li.ha;
+    M[li.c].moves.push({f:a.f,d:a.d,de:li.de,ha:li.ha});
+  }));
+  return M;
+}
+function jrRenderMayor(){
+  const M=jrMayorData();
+  const opts='<select id="mayorSel" onchange="jrMayorOne(this.value)"><option value="">Todas las cuentas</option>'+CUENTAS.map(c=>'<option value="'+c.c+'">'+c.c+' · '+c.n+'</option>').join('')+'</select>';
+  document.getElementById('jr-mayor').innerHTML='<div class="row" style="margin-bottom:10px">'+opts+'</div><div id="mayorBox"></div>';
+  jrMayorOne('');
+}
+function jrMayorOne(code){
+  const M=jrMayorData();
+  const box=document.getElementById('mayorBox');
+  const list=code?[CUENTA_BY[code]]:CUENTAS.filter(c=>M[c.c]);
+  box.innerHTML=list.map(c=>{
+    const m=M[c.c]||{de:0,ha:0,moves:[]};const sd=m.de-m.ha;
+    return '<div class="asiento"><div class="head"><b>'+c.c+' · '+c.n+'</b><span class="pill '+c.t+'">'+TIPO_PILL[c.t]+'</span><span style="flex:1" class="muted">'+TIPO_NAME[c.t]+'</span><span>Saldo: <b style="color:'+(sd>=0?'#93c5fd':'#fcd34d')+'">'+fmt(Math.abs(sd))+' '+(sd>=0?'deudor':'acreedor')+'</b></span></div>'+
+    '<table class="conta"><tr><th>Fecha</th><th>Concepto</th><th style="text-align:right">Debe</th><th style="text-align:right">Haber</th></tr>'+
+    m.moves.map(mv=>'<tr><td class="muted">'+mv.f.split('-').reverse().join('/')+'</td><td>'+mv.d+'</td><td class="num">'+(mv.de?mv.de.toLocaleString('es-AR'):'')+'</td><td class="num">'+(mv.ha?mv.ha.toLocaleString('es-AR'):'')+'</td></tr>').join('')+
+    '<tr class="total"><td colspan="2">Sumas</td><td class="num">'+m.de.toLocaleString('es-AR')+'</td><td class="num">'+m.ha.toLocaleString('es-AR')+'</td></tr></table></div>';
+  }).join('')||'<p class="muted">Sin movimientos.</p>';
+}
+function jrRenderSumas(){
+  const M=jrMayorData();
+  let sd=0,sa=0;
+  const rows=CUENTAS.filter(c=>M[c.c]).map(c=>{
+    const m=M[c.c];const s=m.de-m.ha;
+    if(s>0)sd+=s;else sa+=-s;
+    return '<tr><td>'+c.c+' · '+c.n+' <span class="pill '+c.t+'">'+TIPO_PILL[c.t]+'</span></td><td class="num">'+m.de.toLocaleString('es-AR')+'</td><td class="num">'+m.ha.toLocaleString('es-AR')+'</td><td class="num">'+(s>0?s.toLocaleString('es-AR'):'')+'</td><td class="num">'+(s<0?(-s).toLocaleString('es-AR'):'')+'</td></tr>';
+  }).join('');
+  document.getElementById('jr-sumas').innerHTML='<table class="conta"><tr><th>Cuenta</th><th style="text-align:right">Suma Debe</th><th style="text-align:right">Suma Haber</th><th style="text-align:right">Saldo Deudor</th><th style="text-align:right">Saldo Acreedor</th></tr>'+rows+
+  '<tr class="total"><td>Totales</td><td class="num"></td><td class="num"></td><td class="num">'+sd.toLocaleString('es-AR')+'</td><td class="num">'+sa.toLocaleString('es-AR')+'</td></tr></table>'+
+  (Math.abs(sd-sa)<1?'<p class="balance-ok">✓ Partida doble verificada: los saldos deudores y acreedores se igualan.</p>':'<p class="balance-bad">✗ Descalce detectado: revisá tus asientos.</p>');
+}
+function jrRenderEstados(){
+  const M=jrMayorData();
+  const saldo=c=>{const m=M[c];return m?m.de-m.ha:0};
+  const rv=CUENTAS.filter(c=>c.t==='Rp'&&saldo(c.c)).map(c=>'<tr><td>'+c.n+'</td><td class="num">'+(-saldo(c.c)).toLocaleString('es-AR')+'</td></tr>').join('');
+  const rc=CUENTAS.filter(c=>c.t==='Rn'&&saldo(c.c)).map(c=>'<tr><td>'+c.n+'</td><td class="num">'+saldo(c.c).toLocaleString('es-AR')+'</td></tr>').join('');
+  const v=-CUENTAS.filter(c=>c.t==='Rp').reduce((a,c)=>a+saldo(c.c),0);
+  const c2=CUENTAS.filter(c=>c.t==='Rn').reduce((a,c)=>a+saldo(c.c),0);
+  const res=v-c2;
+  const act=CUENTAS.filter(c=>c.t==='A'&&Math.abs(saldo(c.c))>0.5).map(c=>{
+    let s=saldo(c.c);let extra='';
+    if(c.c==='1.2.01'){const p=saldo('1.2.02');s+=p;extra='<span class="muted"> (− previsión '+Math.abs(saldo('1.2.02')).toLocaleString('es-AR')+')</span>'}
+    return '<tr><td>'+c.n+extra+'</td><td class="num">'+s.toLocaleString('es-AR')+'</td></tr>';
+  }).join('');
+  const actT=CUENTAS.filter(c=>c.t==='A'&&c.c!=='1.2.02').reduce((a,c)=>a+saldo(c.c),0)+saldo('1.2.02');
+  const pas=CUENTAS.filter(c=>c.t==='P'&&saldo(c.c)).map(c=>'<tr><td>'+c.n+'</td><td class="num">'+(-saldo(c.c)).toLocaleString('es-AR')+'</td></tr>').join('');
+  const pasT=-CUENTAS.filter(c=>c.t==='P').reduce((a,c)=>a+saldo(c.c),0);
+  const pn=-CUENTAS.filter(c=>c.t==='N').reduce((a,c)=>a+saldo(c.c),0)+res;
+  document.getElementById('jr-estados').innerHTML=
+  '<div class="grid2"><div class="card"><h2 class="sec">Estado de Resultados</h2><table class="conta">'+
+  '<tr><th>Ingresos y ganancias</th><th></th></tr>'+rv+
+  '<tr><th>Costos y pérdidas</th><th></th></tr>'+rc+
+  '<tr class="total"><td>RESULTADO DEL EJERCICIO</td><td class="num">'+res.toLocaleString('es-AR')+'</td></tr></table>'+
+  (res>=0?'<p class="muted" style="margin-bottom:0">✅ Ganancia del ejercicio: '+fmt(res)+'</p>':'<p class="muted" style="margin-bottom:0">🔻 Pérdida del ejercicio: '+fmt(-res)+'</p>')+
+  '</div><div class="card"><h2 class="sec">Balance General</h2><table class="conta">'+
+  '<tr><th>ACTIVO</th><th></th></tr>'+act+'<tr class="total"><td>Total Activo</td><td class="num">'+actT.toLocaleString('es-AR')+'</td></tr>'+
+  '<tr><th>PASIVO</th><th></th></tr>'+pas+'<tr class="total"><td>Total Pasivo</td><td class="num">'+pasT.toLocaleString('es-AR')+'</td></tr>'+
+  '<tr><th>PATRIMONIO NETO</th><th></th></tr><tr><td>Capital social</td><td class="num">'+(-CUENTAS.filter(c=>c.t==='N').reduce((a,c)=>a+saldo(c.c),0)).toLocaleString('es-AR')+'</td></tr><tr><td>Resultado del ejercicio</td><td class="num">'+res.toLocaleString('es-AR')+'</td></tr>'+
+  '<tr class="total"><td>PN total</td><td class="num">'+pn.toLocaleString('es-AR')+'</td></tr>'+
+  '<tr class="total"><td>P + PN</td><td class="num">'+(pasT+pn).toLocaleString('es-AR')+'</td></tr></table>'+
+  (Math.abs(actT-(pasT+pn))<1?'<p class="balance-ok" style="margin-bottom:0">✓ Balance: Activo = Pasivo + PN</p>':'<p class="balance-bad" style="margin-bottom:0">✗ El balance no cierra — revisá los asientos.</p>')+
+  '</div></div>';
+}
+function jrRenderAll(){jrTotals();jrRenderDiario();jrRenderMayor();jrRenderSumas();jrRenderEstados()}
+/* formulario de asientos */
+let jRows=2;
+function jRenderForm(){
+  const box=document.getElementById('jLines');box.innerHTML='';
+  for(let i=0;i<jRows;i++)box.insertAdjacentHTML('beforeend',jLineHTML(i));
+  jUpdateBalance();
+}
+function jLineHTML(i){
+  const opts=CUENTAS.map(c=>'<option value="'+c.c+'">'+c.c+' · '+c.n+'</option>').join('');
+  return '<div class="jline" data-i="'+i+'"><select class="jCta">'+opts+'</select><input type="number" class="jDe" placeholder="Debe" min="0" oninput="jUpdateBalance()"><input type="number" class="jHa" placeholder="Haber" min="0" oninput="jUpdateBalance()"><button class="btn sm ghost" onclick="this.parentElement.remove();jUpdateBalance()">✕</button></div>';
+}
+function jAddLine(){document.getElementById('jLines').insertAdjacentHTML('beforeend',jLineHTML(jRows++));jUpdateBalance()}
+function jUpdateBalance(){
+  const D=[...document.querySelectorAll('#jLines .jDe')].reduce((a,x)=>a+(+x.value||0),0);
+  const H=[...document.querySelectorAll('#jLines .jHa')].reduce((a,x)=>a+(+x.value||0),0);
+  const el=document.getElementById('jBalance');
+  if(D===0&&H===0){el.textContent='';el.className='muted';return}
+  const ok=D===H&&D>0;
+  el.textContent=(ok?'✓ ':'✗ ')+'Debe '+fmt(D)+' = Haber '+fmt(H);
+  el.className=ok?'balance-ok':'balance-bad';
+}
+function jSave(){
+  const d=document.getElementById('jDesc').value.trim();
+  const f=document.getElementById('jFecha').value||todayISO();
+  const lines=[];
+  document.querySelectorAll('#jLines .jline').forEach(row=>{
+    const cta=row.querySelector('.jCta').value;
+    const de=+row.querySelector('.jDe').value||0, ha=+row.querySelector('.jHa').value||0;
+    if(de||ha)lines.push({c:cta,de,ha});
+  });
+  const D=lines.reduce((a,x)=>a+x.de,0),H=lines.reduce((a,x)=>a+x.ha,0);
+  if(!d)return toast('Ponele concepto al asiento');
+  if(!lines.length)return toast('Cargá al menos una línea con importe');
+  if(D!==H||D<=0)return toast('El asiento no balancea: Debe = Haber');
+  S.jr.entries.push({id:Date.now(),f,d,l:lines});save();markAct();
+  document.getElementById('jDesc').value='';jRows=2;jRenderForm();jrRenderAll();
+  toast('✓ Asiento registrado en el Diario');
+}
+function jLoadExample(){S.jr.entries=CASO_ANDES.map((x,i)=>({...x,id:i+1}));save();jrRenderAll();toast('Caso Distribuidora Andes cargado')}
+function jClear(){if(confirm('¿Vaciar todo el libro diario?')){S.jr.entries=[];save();jrRenderAll();toast('Libro vacío')}}
+
+/* ================================================================
+   FLASHCARDS — SM-2
+================================================================ */
+const cardId=c=>c.u+'|'+c.q.slice(0,18);
+let fcUnit='Vencidas',fcQueue=[],fcPos=0;
+function srGet(c){return S.sr[cardId(c)]||null}
+function fcBuildQueue(){
+  const pool=(fcUnit==='Todas'?CARDS:CARDS.filter(c=>c.u===fcUnit));
+  if(fcUnit==='Vencidas'){
+    fcQueue=pool.filter(c=>{const s=srGet(c);return !s||s.d<=todayISO()});
+  }else fcQueue=pool.slice();
+  fcPos=0;
+}
+function fcStats(){
+  const due=CARDS.filter(c=>{const s=srGet(c);return !s||s.d<=todayISO()}).length;
+  const mast=CARDS.filter(c=>{const s=srGet(c);return s&&s.i>=7}).length;
+  const news=CARDS.filter(c=>!srGet(c)).length;
+  document.getElementById('stTotal').textContent=CARDS.length;
+  document.getElementById('stDue').textContent=due;
+  document.getElementById('stMastered').textContent=mast;
+  document.getElementById('stNew').textContent=news;
+  const mastAll=CARDS.filter(c=>{const s=srGet(c);return s&&s.i>=7}).length;
+  document.getElementById('srFill').style.width=(mastAll/CARDS.length*100)+'%';
+}
+function fcRenderChips(){
+  document.getElementById('chips').innerHTML=['Vencidas','Todas','U1','U2','U3','U4','U5','U6'].map(u=>'<span class="chip'+(u===fcUnit?' on':'')+'" data-u="'+u+'">'+(u==='Vencidas'?'⏰ Vencidas':u)+'</span>').join('');
+}
+document.getElementById('chips').addEventListener('click',e=>{const el=e.target.closest('.chip');if(!el)return;fcUnit=el.dataset.u;fcRenderChips();fcBuildQueue();fcShow()});
+function fcShow(){
+  fcStats();
+  if(!fcQueue.length||fcPos>=fcQueue.length){
+    document.getElementById('fcQ').textContent='🎉 ¡No quedan tarjetas vencidas!';
+    document.getElementById('fcA').textContent='Volvé mañana: la repetición espaciada hace su magia con el tiempo.';
+    document.getElementById('fcCount').textContent='Cola vacía';
+    document.getElementById('fcNext').textContent='';
+    return;
+  }
+  const c=fcQueue[fcPos];
+  const el=document.getElementById('fc');el.classList.remove('flip');
+  setTimeout(()=>{
+    document.getElementById('fcQ').textContent=c.q;
+    document.getElementById('fcA').textContent=c.a;
+    const s=srGet(c);
+    document.getElementById('fcNext').textContent=s?('Próximo repaso: '+s.d.split('-').reverse().join('/')+' · intervalo '+s.i+'d'):'Tarjeta nueva';
+  },200);
+  document.getElementById('fcCount').textContent=c.u+' · '+(fcPos+1)+' / '+fcQueue.length;
+}
+function grade(g){ // 1 fallo, 2 difícil, 3 bien, 4 fácil
+  if(!fcQueue.length||fcPos>=fcQueue.length)return;
+  const c=fcQueue[fcPos],id=cardId(c);
+  let s=S.sr[id]||{e:2.5,i:0,r:0,d:todayISO()};
+  s.r++;
+  if(g===1){s.e=Math.max(1.3,s.e-0.2);s.i=0;s.d=todayISO()}
+  else if(g===2){s.e=Math.max(1.3,s.e-0.15);s.i=Math.max(1,Math.round(s.i*1.2)||1);s.d=addDays(todayISO(),s.i)}
+  else if(g===3){s.i=s.i===0?1:Math.round(s.i*s.e);s.d=addDays(todayISO(),s.i)}
+  else{s.e=Math.min(2.8,s.e+0.15);s.i=s.i===0?3:Math.round(s.i*s.e*1.3);s.d=addDays(todayISO(),s.i)}
+  S.sr[id]=s;save();markAct();
+  toast(g===1?'La ves de nuevo hoy':g===2?'Programada para pronto':'Próximo repaso: '+s.d.split('-').reverse().join('/'));
+  fcPos++;fcShow();
+}
+
+/* ================================================================
+   SIMULACRO
+================================================================ */
+let EX=null,exTimerH=null;
+function exStart(){
+  const uSel=document.getElementById('exUnits').value;
+  const n=+document.getElementById('exCount').value;
+  const mins=+document.getElementById('exMin').value;
+  const pool=(uSel==='all'?QUIZ:QUIZ.filter(q=>q.u===uSel)).slice().sort(()=>Math.random()-0.5).slice(0,n);
+  EX={pool,i:0,answers:[],t:mins*60};
+  document.getElementById('exSetup').classList.add('hidden');
+  document.getElementById('exDone').classList.add('hidden');
+  document.getElementById('exRun').classList.remove('hidden');
+  clearInterval(exTimerH);exTimerH=setInterval(exTick,1000);
+  exRenderQ();
+}
+function exTick(){
+  EX.t--;
+  const mm=String(Math.max(0,Math.floor(EX.t/60))).padStart(2,'0'),ss=String(Math.max(0,EX.t%60)).padStart(2,'0');
+  document.getElementById('exTimer').textContent=mm+':'+ss;
+  if(EX.t<=0){clearInterval(exTimerH);toast('⏰ Tiempo terminado');exFinish()}
+}
+function exRenderQ(){
+  const q=EX.pool[EX.i];
+  document.getElementById('exProg').textContent='Pregunta '+(EX.i+1)+' de '+EX.pool.length;
+  document.getElementById('exUnit').textContent=q.u;
+  document.getElementById('exQ').textContent=q.q;
+  document.getElementById('exOpts').innerHTML=q.o.map((o,i)=>'<button class="opt" data-i="'+i+'"><b>'+String.fromCharCode(65+i)+'</b>'+o+'</button>').join('');
+  document.getElementById('exNext').disabled=true;
+}
+document.getElementById('exOpts').addEventListener('click',e=>{
+  const b=e.target.closest('.opt');if(!b||EX.answers[EX.i]!=null)return;
+  const q=EX.pool[EX.i],pick=+b.dataset.i;
+  EX.answers[EX.i]=pick;
+  document.querySelectorAll('#exOpts .opt').forEach((x,i)=>{
+    if(i===q.k)x.classList.add('correct');
+    else if(i===pick)x.classList.add('wrong');
+  });
+  document.getElementById('exNext').disabled=false;
+});
+function exNext(){
+  if(EX.answers[EX.i]==null)return;
+  EX.i++;
+  if(EX.i>=EX.pool.length){exFinish()}else exRenderQ();
+}
+function exFinish(){
+  clearInterval(exTimerH);
+  const ok=EX.pool.filter((q,i)=>EX.answers[i]===q.k).length;
+  const pct=Math.round(ok/EX.pool.length*100);
+  S.exHistory.push({d:todayISO(),pct,n:EX.pool.length});save();markAct();
+  document.getElementById('exRun').classList.add('hidden');
+  const box=document.getElementById('exDone');box.classList.remove('hidden');
+  box.innerHTML='<div style="text-align:center"><div class="score-ring" style="color:'+(pct>=60?'#4ade80':pct>=40?'#fbbf24':'#f87171')+'">'+pct+'%</div><p class="muted">'+ok+' de '+EX.pool.length+' correctas — '+(pct>=80?'nivel Harvard 🎓':pct>=60?'vas bien, pulí los detalles 💪':'a repasar: usá las flashcards y la chuleta 📖')+'</p></div>'+
+  '<h2 class="sec" style="margin-top:18px">Corrección</h2>'+
+  EX.pool.map((q,i)=>{
+    const my=EX.answers[i],good=my===q.k;
+    return '<div class="asiento" style="margin:10px 0"><div class="head"><span>'+(good?'✅':'❌')+'</span><span class="pill Rp">'+q.u+'</span><span style="flex:1">'+q.q+'</span></div><div style="padding:12px 14px;font-size:13.5px;line-height:1.6"><b style="color:#4ade80">Correcta: '+String.fromCharCode(65+q.k)+') '+q.o[q.k]+'</b><br>'+(my!=null&&!good?'<span style="color:#fca5a5">Marcaste: '+String.fromCharCode(65+my)+') '+q.o[my]+'</span><br>':'')+'<span class="muted">💡 '+q.w+'</span></div></div>';
+  }).join('')+
+  '<div class="row" style="justify-content:center;margin-top:14px"><button class="btn primary" onclick="exAgain()">🔄 Otro simulacro</button></div>';
+  exHistRender();progRender();
+}
+function exAgain(){document.getElementById('exDone').classList.add('hidden');document.getElementById('exSetup').classList.remove('hidden')}
+function exHistRender(){
+  const h=S.exHistory.slice(-6);
+  document.getElementById('exHistory').textContent=h.length?h.map(x=>x.pct+'%').join(' · '):'sin intentos aún';
+}
+
+/* ================================================================
+   POMODORO + SESIONES
+================================================================ */
+const PM={focus:25*60,rest:5*60};
+let pT=PM.focus,pRun=null,pMode='focus';
+function pomoTick(){
+  pT--;
+  if(pT<=0){
+    if(pMode==='focus'){S.pomo[todayISO()]=(S.pomo[todayISO()]||0)+1;save();markAct();addSession('Pomodoro','General',25,true);toast('🍅 ¡Pomodoro completado y registrado!');pMode='rest';pT=PM.rest}
+    else{toast('Descanso terminado — volvé al enfoque');pMode='focus';pT=PM.focus}
+    pomoRender();return;
+  }
+  pomoRender();
+}
+function pomoRender(){
+  const mm=String(Math.floor(pT/60)).padStart(2,'0'),ss=String(pT%60).padStart(2,'0');
+  document.getElementById('pomoTime').textContent=mm+':'+ss;
+  document.getElementById('pomoMode').textContent=pMode==='focus'?'🎯 Enfoque':'☕ Descanso';
+  const tot=pMode==='focus'?PM.focus:PM.rest;
+  document.getElementById('ringFg').style.strokeDashoffset=653*(pT/tot);
+  document.getElementById('pomoRounds').textContent='🍅 '+(S.pomo[todayISO()]||0)+' pomodoros hoy';
+}
+function pomoToggle(){
+  if(pRun){clearInterval(pRun);pRun=null;document.getElementById('pomoBtn').textContent='▶ Iniciar'}
+  else{pRun=setInterval(pomoTick,1000);document.getElementById('pomoBtn').textContent='⏸ Pausar';toast('Pomodoro iniciado — 25 minutos de foco')}
+}
+function pomoReset(){clearInterval(pRun);pRun=null;pMode='focus';pT=PM.focus;document.getElementById('pomoBtn').textContent='▶ Iniciar';pomoRender()}
+function pomoSkip(){pT=1;pomoTick()}
+function addSession(type,unit,min,silent){
+  const t=type||document.getElementById('sesType').value;
+  const u=unit||document.getElementById('sesUnit').value;
+  const m=parseInt(min||document.getElementById('sesMin').value)||25;
+  S.sessions.push({d:todayISO(),t,u,m});save();markAct();sesRender();progRender();
+  if(!silent)toast('Sesión registrada: '+m+' min — '+t);
+}
+function sesRender(){
+  const l=S.sessions.slice(-8).reverse();
+  document.getElementById('sesList').innerHTML=l.map(s=>'<div class="task"><span class="txt">'+s.t+' — '+s.u+'<span class="meta">'+s.d.split('-').reverse().join('/')+' · '+s.m+' min</span></span></div>').join('')||'<p class="muted">Sin sesiones todavía. ¡Arrancá con un pomodoro! 🍅</p>';
+}
+
+/* ================================================================
+   TAREAS
+================================================================ */
+function addTask(t,u,p,d,done){
+  const title=t||document.getElementById('tTitle').value.trim();if(!title)return toast('Escribí la tarea');
+  S.tasks.push({id:Date.now(),title,u:u||document.getElementById('tUnit').value,p:p||document.getElementById('tPrio').value,d:d||document.getElementById('tDue').value,done:!!done});
+  save();markAct();if(!t)document.getElementById('tTitle').value='';
+  taskRender();toast('Tarea agregada ✅');
+}
+function quickTask(base){addTask(base+' '+document.getElementById('tUnit').value)}
+function toggleTask(id){const t=S.tasks.find(x=>x.id===id);t.done=!t.done;save();markAct();taskRender();progRender()}
+function delTask(id){S.tasks=S.tasks.filter(x=>x.id!==id);save();taskRender()}
+function taskRender(){
+  const L=S.tasks.slice().sort((a,b)=>(a.done-b.done)||(a.d<b.d?-1:1));
+  document.getElementById('taskList').innerHTML=L.map(t=>{
+    const due=t.d?'<span class="due'+(t.d===todayISO()?' today':'')+'">📅 '+t.d.split('-').reverse().join('/')+'</span>':'';
+    return '<div class="task'+(t.done?' done':'')+'"><input type="checkbox" '+(t.done?'checked':'')+' onchange="toggleTask('+t.id+')"><span class="txt">'+t.title+'<span class="meta">'+t.u+'</span></span><span class="prio '+t.p+'">'+t.p.toUpperCase()+'</span>'+due+'<button class="btn sm ghost" onclick="delTask('+t.id+')">🗑</button></div>';
+  }).join('')||'<p class="muted" style="text-align:center;padding:20px">Sin tareas — creá la primera 🚀</p>';
+}
+
+/* ================================================================
+   PROGRESO
+================================================================ */
+function streakCalc(){
+  let n=0,d=todayISO();
+  if(!S.act[d])d=addDays(d,-1);
+  while(S.act[d]){n++;d=addDays(d,-1)}
+  return n;
+}
+function progRender(){
+  const next=PARCIALES.find(p=>p.d>=todayISO())||PARCIALES[2];
+  const days=Math.ceil((new Date(next.d+'T12:00:00')-new Date(todayISO()+'T12:00:00'))/864e5);
+  document.getElementById('pgExam').textContent=days;
+  document.getElementById('pgExamName').textContent=next.n;
+  document.getElementById('pgExamDate').textContent='📅 '+next.d.split('-').reverse().join('/')+' — faltan '+days+' días';
+  const min=S.sessions.reduce((a,s)=>a+s.m,0);
+  document.getElementById('pgMin').textContent=min;
+  document.getElementById('pgDone').textContent=S.tasks.filter(t=>t.done).length;
+  const best=S.exHistory.length?Math.max(...S.exHistory.map(x=>x.pct)):0;
+  document.getElementById('pgBest').textContent=best+'%';
+  document.getElementById('streakN').textContent=streakCalc();
+  /* barras 14 días */
+  const days14=[...Array(14)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-13+i);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')});
+  const max=Math.max(25,...days14.map(d=>S.sessions.filter(s=>s.d===d).reduce((a,s)=>a+s.m,0)));
+  document.getElementById('chart').innerHTML=days14.map(d=>{
+    const m=S.sessions.filter(s=>s.d===d).reduce((a,s)=>a+s.m,0);
+    return '<div class="b" style="height:'+(m/max*100)+'%" title="'+d+': '+m+' min"><span>'+d.slice(8)+'</span></div>';
+  }).join('');
+  /* heatmap 12 semanas */
+  let h='';
+  const today=new Date();
+  for(let w=11;w>=0;w--){
+    for(let dd=6;dd>=0;dd--){
+      const dt=new Date(today);dt.setDate(dt.getDate()-(w*7+dd));
+      const iso=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+      const m=S.sessions.filter(s=>s.d===iso).reduce((a,s)=>a+s.m,0);
+      const lvl=m===0?'':m<30?'l1':m<60?'l2':m<120?'l3':'l4';
+      h+='<i class="'+lvl+'" title="'+iso+': '+m+' min"></i>';
+    }
+  }
+  document.getElementById('heat').innerHTML=h;
+  /* dominio por unidad: flashcards maduras + último examen */
+  document.getElementById('unitMastery').innerHTML=['U1','U2','U3','U4','U5','U6'].map(u=>{
+    const cs=CARDS.filter(c=>c.u===u);
+    const m=cs.filter(c=>{const s=srGet(c);return s&&s.i>=7}).length;
+    const p=cs.length?m/cs.length*100:0;
+    return '<div class="row" style="margin:8px 0"><b style="width:32px">'+u+'</b><div class="sr-bar" style="flex:1;margin:0"><div style="width:'+p+'%"></div></div><span class="muted">'+Math.round(p)+'%</span></div>';
+  }).join('');
+}
+
+/* ================================================================
+   CHULETA
+================================================================ */
+document.getElementById('t-cheat').innerHTML=CHEAT.map(ch=>
+ '<details><summary>'+ch.u+'</summary><div class="body"><ul>'+ch.items.map(i=>'<li>'+i+'</li>').join('')+'</ul></div></details>').join('')+
+ '<details><summary>⚖️ Fórmulas de siempre</summary><div class="body"><ul><li><b>PN = Activo − Pasivo</b></li><li>Resultado = Ingresos y ganancias − Costos y pérdidas</li><li>Balance: Activo = Pasivo + PN (siempre, si registraste bien)</li><li>Interés implícito = Precio total a plazo − Precio de contado</li><li>Valor recuperable = mayor entre VNR y flujo futuro de uso</li></ul></div></details>';
+
+/* ================================================================
+   PALETA DE COMANDOS (Ctrl+K)
+================================================================ */
+const palEl=document.getElementById('pal');
+const COMMANDS=[
+ {l:'Ir a Clases',h:'tab 1',f:()=>goto('cal')},
+ {l:'Ir a Asientos (motor contable)',h:'tab 2',f:()=>goto('jr')},
+ {l:'Ir a Flashcards',h:'tab 3',f:()=>goto('cards')},
+ {l:'Simulacro de parcial',h:'tab 4',f:()=>goto('exam')},
+ {l:'Cargar asiento nuevo',h:'contable',f:()=>{goto('jr');document.querySelector('[data-s=nuevo]').click()}},
+ {l:'Cargar caso Distribuidora Andes',h:'contable',f:()=>{goto('jr');jLoadExample()}},
+ {l:'Iniciar pomodoro',h:'focus',f:()=>{goto('pomo');if(!pRun)pomoToggle()}},
+ {l:'Nueva tarea',h:'tareas',f:()=>{goto('tasks');setTimeout(()=>document.getElementById('tTitle').focus(),100)}},
+ {l:'Repasar tarjetas vencidas',h:'flashcards',f:()=>{goto('cards');fcUnit='Vencidas';fcRenderChips();fcBuildQueue();fcShow()}},
+ {l:'Ver chuleta completa',h:'resumen',f:()=>goto('cheat')},
+ {l:'Exportar mis datos',h:'backup',f:exportData},
+ {l:'Cambiar tema claro/oscuro',h:'modo',f:toggleTheme},
+];
+let palSel=0,palFiltered=COMMANDS;
+function palToggle(){palEl.classList.contains('hidden')?palOpen():palEl.classList.add('hidden')}
+function palOpen(){palEl.classList.remove('hidden');const inp=document.getElementById('palIn');inp.value='';palFilter('');setTimeout(()=>inp.focus(),30)}
+document.getElementById('palIn').addEventListener('input',e=>palFilter(e.target.value));
+document.getElementById('palIn').addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'){palSel=Math.min(palSel+1,palFiltered.length-1);palList()}
+  if(e.key==='ArrowUp'){palSel=Math.max(palSel-1,0);palList()}
+  if(e.key==='Enter'&&palFiltered[palSel]){palEl.classList.add('hidden');palFiltered[palSel].f()}
+});
+function palFilter(q){
+  palFiltered=COMMANDS.filter(c=>c.l.toLowerCase().includes(q.toLowerCase()));
+  palSel=0;palList();
+}
+function palList(){
+  document.getElementById('palList').innerHTML=palFiltered.map((c,i)=>'<div class="item'+(i===palSel?' sel':'')+'" data-i="'+i+'">'+c.l+'<span class="hint">'+c.h+'</span></div>').join('')||'<div class="item muted">Sin resultados</div>';
+}
+document.getElementById('palList').addEventListener('click',e=>{const el=e.target.closest('.item');if(!el||!palFiltered[+el.dataset.i])return;palEl.classList.add('hidden');palFiltered[+el.dataset.i].f()});
+palEl.addEventListener('click',e=>{if(e.target===palEl)palEl.classList.add('hidden')});
+
+/* ================================================================
+   EXPORT / IMPORT
+================================================================ */
+function exportData(){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}));
+  a.download='contabilidad-pro-'+todayISO()+'.json';a.click();toast('Backup descargado')
+}
+function importData(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{S=JSON.parse(r.result);save();location.reload()}catch(e){toast('Archivo inválido')}};
+  r.readAsText(f);
+}
+
+/* ================================================================
+   TAREAS INICIALES (primera vez)
+================================================================ */
+if(!S.tasks.length){
+  S.tasks=[
+   {id:1,title:'Leer apunte U1 + autoevaluación',u:'U1',p:'alta',d:'2026-08-18',done:false},
+   {id:2,title:'Autoevaluación U2',u:'U2',p:'alta',d:'2026-08-20',done:false},
+   {id:3,title:'Autoevaluación U3',u:'U3',p:'media',d:'2026-08-22',done:false},
+   {id:4,title:'Mini-casos U4 (fondo fijo + conciliación)',u:'U4',p:'media',d:'2026-08-24',done:false},
+   {id:5,title:'Leer teórica U5 antes de clase',u:'U5',p:'alta',d:'2026-08-19',done:false},
+   {id:6,title:'Práctica U5 (inversiones)',u:'U5',p:'media',d:'2026-08-21',done:false},
+   {id:7,title:'Dominar flashcards U1–U3',u:'General',p:'media',d:'2026-08-28',done:false},
+   {id:8,title:'Simulacro 1er parcial (20 preguntas)',u:'General',p:'alta',d:'2026-09-01',done:false},
+   {id:9,title:'Repaso general 1er parcial',u:'General',p:'alta',d:'2026-09-02',done:false},
+   {id:10,title:'🔴 PRIMER PARCIAL — U. I a VI',u:'General',p:'alta',d:'2026-09-04',done:false},
+  ];save();
+}
+
+/* ================================================================
+   INIT
+================================================================ */
+applyTheme();
+calRender();agendaRender();
+jrRenderAll();
+fcRenderChips();fcBuildQueue();fcShow();
+exHistRender();
+pomoRender();sesRender();
+taskRender();progRender();
+setTimeout(()=>toast('Apretá Ctrl+K para moverte como un pro ⌨️'),1200);
+</script>
+</body>
+</html>
