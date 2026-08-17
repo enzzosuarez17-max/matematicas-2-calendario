@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#0c1018;--panel:#141a26;--panel2:#1b2334;--line:#28324a;--text:#eef2f8;--muted:#93a1b8;--blue:#5b8cff;--red:#ef4444;--green:#2fbf71;--amber:#f5a524}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,-apple-system,'Segoe UI',sans-serif;padding:14px}
+.top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.top h1{font-size:16px;flex:1}
+.chip{border:1px solid var(--line);background:var(--panel2);color:var(--muted);padding:5px 12px;border-radius:99px;font-size:12px;font-weight:800;cursor:pointer}
+.chip.on{background:linear-gradient(120deg,var(--blue),#8b5cf6);color:#fff;border-color:transparent}
+.stats{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
+.st{flex:1;min-width:90px;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:9px 12px;text-align:center}
+.st b{display:block;font-size:20px}
+.st span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.bar{height:7px;border-radius:6px;background:var(--panel2);overflow:hidden;margin:10px 0}
+.bar>div{height:100%;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .35s}
+.stage{perspective:1200px;margin:12px 0}
+.card{position:relative;min-height:240px;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,.1,.2,1);cursor:pointer}
+.card.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;border:1px solid var(--line)}
+.front{background:linear-gradient(135deg,#141d36,#20304f)}
+.front .q{font-size:19px;font-weight:800;line-height:1.4}
+.back{background:linear-gradient(135deg,#1c1533,#2e2050);transform:rotateY(180deg)}
+.back .a{font-size:14.5px;line-height:1.6;font-weight:500}
+.hint{margin-top:12px;font-size:11px;color:var(--muted)}
+.unit{position:absolute;top:12px;left:14px;font-size:10px;font-weight:800;letter-spacing:1.5px;color:#93c5fd}
+.actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:11px;padding:10px 16px;font-weight:800;font-size:13px;cursor:pointer}
+.btn.again{color:#fca5a5}.btn.hard{color:#fcd34d}.btn.good{color:#86efac}
+.btn.pri{background:linear-gradient(120deg,var(--blue),#8b5cf6);border-color:transparent;color:#fff}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12px;color:var(--muted)}
+.done{text-align:center;padding:40px 10px}
+.done .big{font-size:40px}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>🃏 Flashcards — Contabilidad I</h1>
+  <span id="chips"></span>
+</div>
+<div class="stats">
+  <div class="st"><b id="sTot">0</b><span>Mazo</span></div>
+  <div class="st"><b id="sOk" style="color:#86efac">0</b><span>Dominadas</span></div>
+  <div class="st"><b id="sNo" style="color:#fca5a5">0</b><span>Repasar</span></div>
+  <div class="st"><b id="sLeft">0</b><span>Quedan</span></div>
+</div>
+<div class="bar"><div id="fill" style="width:0%"></div></div>
+<div class="stage"><div class="card" id="card">
+  <div class="face front"><span class="unit" id="u1"></span><div class="q" id="q"></div><div class="hint">Tocá la tarjeta (o barra espaciadora) para ver la respuesta</div></div>
+  <div class="face back"><span class="unit" id="u2"></span><div class="a" id="a"></div></div>
+</div></div>
+<div class="actions">
+  <button class="btn again" id="bA">✗ No la sabía</button>
+  <button class="btn hard" id="bH">😐 Casi</button>
+  <button class="btn good" id="bG">✓ Dominada</button>
+  <button class="btn pri" id="bS">🔀 Mezclar</button>
+</div>
+<div class="foot"><span id="count"></span><span>Las que fallás vuelven al final del mazo</span></div>
+<script>
+const C=[
+['U1','¿Qué es la contabilidad?','Actividad y disciplina que identifica, mide y comunica información económica y financiera de un ente, útil para la toma de decisiones.'],
+['U1','Contabilidad vs. teneduría de libros','La teneduría es solo la técnica de registro de hechos; la contabilidad además analiza, mide, sintetiza e informa.'],
+['U1','¿Qué es un ente contable?','Entidad económica autónoma cuyo patrimonio se registra, distinta de las personas físicas o jurídicas que lo conforman.'],
+['U1','Recursos y fuentes','Recursos: bienes y derechos del ente. Fuentes: quiénes los aportan — terceros (pasivo) y socios (patrimonio neto).'],
+['U1','Usuarios internos vs. externos','Internos: dirección y empleados (gestión, presupuestos). Externos: inversores, acreedores, Estado, clientes (estados contables).'],
+['U1','Aporte de Luca Pacioli','Difundió la partida doble en 1494 (Summa de Arithmetica): todo hecho tiene doble efecto y el registro siempre equilibra.'],
+['U2','Elementos patrimoniales','Estáticos: activo, pasivo y PN. Dinámicos: ingresos, costos, ganancias y pérdidas (los del resultado).'],
+['U2','Variación permutativa vs. modificativa','Permutativa: cambia la composición del patrimonio sin tocar el resultado. Modificativa: altera el resultado o el PN.'],
+['U2','Criterio de lo devengado','El hecho se registra cuando nace el derecho u obligación, independiente de cuándo se cobra o paga.'],
+['U2','Valor histórico vs. corriente','Histórico: costo de incorporación. Corriente: valor de mercado al cierre (cotización, costo de reposición, VNR).'],
+['U2','Interés implícito','Componente financiero oculto en operaciones a plazo: diferencia entre el total a plazo y el precio de contado.'],
+['U2','Límite a la medición','Ningún activo se mide por encima de su valor recuperable: flujo futuro por su uso + valor de venta.'],
+['U3','Etapas del proceso contable','Registración (Diario) → clasificación (Mayor) → síntesis (sumas y saldos) → exposición (estados contables).'],
+['U3','¿Qué es el ejercicio económico?','Período entre dos cierres, de duración máxima de un año, en el que se mide el resultado.'],
+['U3','Plan de cuentas','Listado ordenado y codificado de las cuentas del ente (1 Activo → 1.1 Disponibilidades → 1.1.01 Caja).'],
+['U3','Manual de cuentas','Ficha por cuenta: qué registra, cuándo se debita, cuándo se acredita y qué representa su saldo.'],
+['U3','Requisitos legales de los registros','Libros Diario e Inventarios y Balances (C. de Comercio); cronológicos, sin espacios en blanco, en moneda común.'],
+['U3','Procesamiento independiente vs. integrado','Independiente: cada subsistema registra aparte y luego se vuelca al contable. Integrado: base de datos única.'],
+['U4','Componentes de caja','Billetes y monedas, cheques comunes de terceros a la vista, giros postales y telegráficos.'],
+['U4','¿Qué es el fondo fijo?','Monto constante de dinero para gastos menores y urgentes; se repone contra comprobantes por lo gastado.'],
+['U4','¿Qué es la conciliación bancaria?','Procedimiento que explica las diferencias entre el saldo según libros y el saldo según resumen bancario.'],
+['U4','Causas típicas de diferencia bancaria','Cheques emitidos no cobrados, depósitos en tránsito, débitos/créditos bancarios no registrados, errores.'],
+['U4','¿Qué ajusto tras conciliar?','Solo lo que el banco registró y yo no: comisiones, intereses, impuestos. Los tránsitos NO se ajustan.'],
+['U4','Cheque de pago diferido','No es caja: el cobro es futuro → crédito por cobrar (corriente o no corriente según el plazo).'],
+['U5','¿Qué es una inversión?','Bien que no se usa en la operatoria principal ni se revende habitualmente: se retiene por renta o revalorización.'],
+['U5','Clasificación de inversiones','En entidades financieras (plazos fijos), inmobiliarias (inmuebles para alquilar) y en títulos y valores.'],
+['U5','Plazo fijo al cierre del ejercicio','Se devengan los intereses ganados con el transcurso del tiempo, aunque no se hayan cobrado.'],
+['U5','¿Cómo se miden las acciones al cierre?','Criterio corriente: cotización al cierre. Criterio histórico: costo de incorporación más devengos.'],
+['U5','Vender acciones por debajo del costo','Genera una pérdida del ejercicio por la diferencia entre el costo y el precio de venta.'],
+['U5','¿Qué distingue a una inversión inmobiliaria?','El inmueble no se usa en la actividad (si no, sería bien de uso): se mantiene para alquilar o revalorizar.'],
+['U6','Créditos por ventas vs. otros créditos','Por ventas: nacen de la actividad principal. Otros: alquileres a cobrar, adelantos, anticipos.'],
+['U6','¿Qué es la previsión por incobrabilidad?','Estimación de la porción de créditos que probablemente no se cobre, por criterio de prudencia.'],
+['U6','Métodos de cálculo de la previsión','Análisis individual de cada saldo o porcentaje global sobre ventas / saldos de deudores.'],
+['U6','¿Dónde se informa la previsión?','Como deducción de los créditos en el activo (no es pasivo); el gasto va al estado de resultados.'],
+['U6','Cliente en convocatoria de acreedores','Se previsiona el porcentaje que se estima no recuperar; si la incobrabilidad es cierta, baja directa.'],
+['U6','Cobra un deudor ya previsionado','Se anula la previsión utilizada y se reconoce una ganancia por la recuperación.'],
+];
+let unit='Todas',queue=[],i=0,ok=0,no=0;
+const card=document.getElementById('card');
+function build(){
+  let d=C.map((c,idx)=>({c:c,idx:idx}));
+  if(unit!=='Todas')d=d.filter(x=>x.c[0]===unit);
+  queue=d;i=0;
+  document.getElementById('sTot').textContent=queue.length;
+  upd();
+}
+function shuffle(){for(let k=queue.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[queue[k],queue[j]]=[queue[j],queue[k]]}i=0;show()}
+function upd(){
+  document.getElementById('sOk').textContent=ok;
+  document.getElementById('sNo').textContent=no;
+  document.getElementById('sLeft').textContent=Math.max(0,queue.length-i);
+  document.getElementById('fill').style.width=(queue.length?Math.round(i/queue.length*100):0)+'%';
+}
+function show(){
+  upd();
+  if(i>=queue.length){
+    document.getElementById('q').innerHTML='🎉 ¡Mazo completado!';
+    document.getElementById('a').textContent='Dominadas: '+ok+' · Para repasar: '+no+'. Mezclá o cambiá de unidad para seguir.';
+    document.getElementById('count').textContent='—';
+    return;
+  }
+  const c=queue[i].c;
+  card.classList.remove('flip');
+  setTimeout(()=>{
+    document.getElementById('q').textContent=c[1];
+    document.getElementById('a').textContent=c[2];
+    document.getElementById('u1').textContent='Unidad '+c[0].slice(1);
+    document.getElementById('u2').textContent='Unidad '+c[0].slice(1);
+  },180);
+  document.getElementById('count').textContent='Tarjeta '+(i+1)+' de '+queue.length;
+}
+function grade(g){
+  if(i>=queue.length)return;
+  const c=queue[i];
+  if(g==='ok'){ok++;upd()}
+  else if(g==='no'){no++;queue.push(c);document.getElementById('sTot').textContent=queue.length;upd()}
+  // 'hard' cuenta como vista: pasa sin sumar
+  i++;show();
+}
+card.onclick=()=>card.classList.toggle('flip');
+document.getElementById('bA').onclick=()=>grade('no');
+document.getElementById('bH').onclick=()=>grade('hard');
+document.getElementById('bG').onclick=()=>grade('ok');
+document.getElementById('bS').onclick=()=>{ok=0;no=0;shuffle()};
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space'){e.preventDefault();card.classList.toggle('flip')}
+  if(e.key==='ArrowRight')grade('hard');
+});
+const chips=document.getElementById('chips');
+['Todas','U1','U2','U3','U4','U5','U6'].forEach(u=>{
+  const b=document.createElement('span');b.className='chip'+(u===unit?' on':'');b.textContent=u==='Todas'?'Todas':u;
+  b.onclick=()=>{unit=u;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));ok=0;no=0;build();show()};
+  chips.appendChild(b);
+});
+build();show();
+</script>
+</body>
+</html>
